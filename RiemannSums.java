@@ -1,6 +1,7 @@
 //2008 - 3
 
 import java.util.*;
+import java.lang.Math;
 
 public class RiemannSums {
 
@@ -31,13 +32,13 @@ public class RiemannSums {
       double iteration = 0.0;//need this coef to raise one each time
       double totalArea = 0.0;//Answer
       for(double x = a; x < b; x += rectWidth){
-        double leftXPoint = a + (rectWidth * iter);
+        double leftXPoint = a + (rectWidth * iteration);
         //Find height, because we know width
         int iter = 0;
         double yCoordinate = 0.0;
         for(int j = 0; j < coefs.size(); j++){
           double temp = coefs.get(j);
-          temp += Math.pow(leftXPoint, iter)
+          temp += Math.pow(leftXPoint, iter);
           yCoordinate += temp;
           iter++;
         }
@@ -56,7 +57,7 @@ public class RiemannSums {
           double posX = coefs.get(x) * -1;
           System.out.print(" - " + posX + "x^" + x);
         } else {
-          System.out.print(" + " coefs.get(x) + "x^" + x);
+          System.out.print(" + " + coefs.get(x) + "x^" + x);
         }
         
       }
