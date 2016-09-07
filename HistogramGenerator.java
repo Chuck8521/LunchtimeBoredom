@@ -1,10 +1,12 @@
 //2008 - #2
+//Only works for numbers with one or two digits (includes 0 and the negatives).
+//Adaptable for larger numbers, feel free to do so for an interesting challenge
 
 import java.util.*;
 
 public class HistogramGenerator {
 
-  public static main void(String[] args){
+  public static void main(String[] args){
   
     Scanner input = new Scanner(System.in);
     Scanner inputString = new Scanner(System.in);
@@ -20,12 +22,12 @@ public class HistogramGenerator {
       
       //There are as many lines of input as numRuns. Throw everything in one ArrayList?
       ArrayList<Integer> nums = new ArrayList<Integer>();
-      for(int x = 0; x < runs; x++){
+      for(int x = 0; x < numRuns; x++){
         
         String in = inputString.nextLine();
         String[] strings = in.split(" ");
         for(int j = 0; j < strings.length; j++){
-          nums.add(Integer.parseInt(strings[j]);
+          nums.add(Integer.parseInt(strings[j]));
         }
         
       }
@@ -33,34 +35,59 @@ public class HistogramGenerator {
       int min = Collections.min(nums);//error?
       int max = Collections.max(nums);
       
-      ArrayList<Integer> number = new ArrayList<Integer>();
       ArrayList<Integer> freq = new ArrayList<Integer>();
       
-      for(int x = 0; x < nums.size(); x++){
-        int test = nums.get(x);
-        if(test == -999999){//Don't think this will be used
-          continue;
-        }
-        int frequency = 1;
-        for(int j = x + 1; j < nums.size(); j++){
-          int test2 = nums.get(j);
-          if(test = test2){
-            frequency++;
-            nums.replace(j, -999999)
-          }
-        }
-        number.add(test);
-        freq.add(frequency;)
+      for(int x = min; x <= max; x++){
+         int frequency = 0;
+         for(int q = 0; q < nums.size(); q++){
+            if(nums.get(q) == x){
+               frequency++;
+            }
+         }
+         freq.add(frequency);
       }
       
       
       //PRINTING TIME
       int height = Collections.max(freq);
       for(int x = height; x > 0; x--){
+        System.out.print(" ");
+        for(int j = 0; j < freq.size(); j++){
+          if(freq.get(j) == x){
+            System.out.print("*  ");
+            freq.set(j,x - 1);
+          } else {
+            System.out.print("   ");
+          }
+        }
+        System.out.println();
+      }
+      
+      //Asteriks printed. Do the number line and numbers
+      System.out.print("-+");
+      for(int x = min + 1; x <= max; x++){
         
-        System.out.print()//TODO
+        System.out.print("--+");
         
       }
+      
+      System.out.println();
+      
+      //Same thing, basically... bad practice? Nah, probably easiest way
+      if(min < 10){
+        System.out.print(" ");
+      }
+      for(int x = min; x <= max; x++){
+        
+        if(x >= 9){
+          System.out.print(x + " ");
+        } else {
+          System.out.print(x + "  ");
+        }
+        
+      }
+      
+      System.out.println();
       
       
     }
