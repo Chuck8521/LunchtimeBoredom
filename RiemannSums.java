@@ -1,4 +1,5 @@
 //2008 - 3
+//InputFormatExceptions all over the place. It works when input is correct, and that's good enough for me.
 
 import java.util.*;
 import java.lang.Math;
@@ -29,30 +30,26 @@ public class RiemannSums {
       double m = (double) rawM;
       double rectWidth = (b - a)/m;
       
-      double iteration = 0.0;//need this coef to raise one each time
       double totalArea = 0.0;//Answer
-      for(double x = a; x < b; x += rectWidth){
-        double leftXPoint = a + (rectWidth * iteration);
+      for(double x = 0; x < m; x ++){
+        double leftXPoint = a + (rectWidth * x);
         //Find height, because we know width
-        int iter = 0;
         double yCoordinate = 0.0;
         for(int j = 0; j < coefs.size(); j++){
           double temp = coefs.get(j);
-          temp += Math.pow(leftXPoint, iter);
+          temp *= Math.pow(leftXPoint, j);
           yCoordinate += temp;
-          iter++;
         }
         
         //Have y, do stuff
         double area = yCoordinate * rectWidth;
         totalArea += area;
-        iteration++;
         
       }
       
       //OUTPUT TIME
-      System.out.print("Estimated area under y =");
-      for(int x = 0; x < coefs.size(); x++){
+      System.out.print("Estimated area under y = " + coefs.get(0) + "x^0");
+      for(int x = 1; x < coefs.size(); x++){
         if(coefs.get(x) < 0.0){
           double posX = coefs.get(x) * -1;
           System.out.print(" - " + posX + "x^" + x);
@@ -63,7 +60,7 @@ public class RiemannSums {
       }
       System.out.println();
       
-      System.out.println("   Between x = " + a + " and x = " + b + " using " + rawM + " rectangles is " + totalArea);
+      System.out.println("   between x = " + a + " and x = " + b + " using " + rawM + " rectangles is " + totalArea);
       
     }
     
