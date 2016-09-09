@@ -25,8 +25,21 @@ public class LineSegmentRotation{
       double x2 = doubs[2];
       double y2 = doubs[3];
       
-      //Argh it be the math
+      //Arrr it be the math
+      double xm = (x1 + x2) / 2.0;
+      double ym = (y1 + y2) / 2.0;
       
+      double changeX = x1 - xm;
+      double changeY = y1 - ym;
+      double firstX2 = xm + changeY;
+      double firstY2 = ym + changeX;
+      
+      changeX = x2 - xm;
+      changeY = y2 - ym;
+      double secondX2 = xm + changeY;
+      double secondY2 = ym + changeX;
+      
+      System.out.println("Rotating (" + x1 + "," + y1 + ")(" + x2 + "," + y2 + ") yields (" + firstX2 + "," + secondY2 + ")(" + secondX2 + "," + firstY2 + ")");
       
     
     }
