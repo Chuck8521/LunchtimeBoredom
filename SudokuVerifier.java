@@ -11,6 +11,7 @@ public class SudokuVerifier{
       int times = input.nextInt();
     
       for(int i = 0; i < times; i++){
+        boolean superintelligent = true;
         boolean viable = true;
         boolean incomplete = false;
         ArrayList<Integer> rows = new ArrayList<Integer>();
