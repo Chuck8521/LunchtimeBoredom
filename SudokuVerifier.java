@@ -25,10 +25,11 @@ public class SudokuVerifier{
             board[x][j] = Integer.parseInt(rawNums[j]);
             //Check for repetition in row here rather than later
             for(int q = j + 1; q < 9; q++){
-              if(rawNums[q].equals(rawNums[j])){
+              if(rawNums[q].equals(rawNums[j]) && !rawNums[q].equals("0")){
                 viable = false;
                 if(!rows.contains(x + 1)) rows.add(x + 1);//Because of 0-based indexing
               } else if (rawNums[q].equals("0") || rawNums[j].equals("0")){
+                //Gets all incompletes, but still need to ignore zero later
                 incomplete = true;
               }
             }
@@ -39,7 +40,7 @@ public class SudokuVerifier{
         for(int x = 0; x < 9; x++){
           for(int j = 0; j < 9; j++){
             for(int k = j + 1; k < 9; k++){
-              if(board[x][j] == board[x][k]){
+              if(board[x][j] == board[x][k] && board[x][j] != 0){
                 viable = false;
                 if(!columns.contains(x + 1)) columns.add(x + 1);
               }
@@ -55,7 +56,7 @@ public class SudokuVerifier{
              for(int q = j; q < j + 3; q++){
                for(int y = k + 1; y < x + 3; y++){
                  for(int v = q + 1; v < j + 3; v++){
-                   if(board[k][q] == board[y][v]){
+                   if(board[k][q] == board[y][v] && board[k][q] != 0){
                      viable = false;
                      if(x < 3 && j < 3){
                        if(!subms.contains(1)) subms.add(1); 
@@ -107,6 +108,7 @@ public class SudokuVerifier{
           System.out.println();
         }
         
+        inputString.nextLine();
       
       }
       
