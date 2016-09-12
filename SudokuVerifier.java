@@ -49,8 +49,8 @@ public class SudokuVerifier{
         }
         
         //Check for submatrix repetition
-        for(int x = 0; x < 9; x + 3){
-         for(int j = 0; j < 9; j + 3){
+        for(int x = 0; x < 9; x =+ 3){
+         for(int j = 0; j < 9; j =+ 3){
            //[x][j] is always top left of submatrix
            for(int k = x; k < x + 3; k++){
              for(int q = j; q < j + 3; q++){
