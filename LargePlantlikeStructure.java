@@ -1,4 +1,4 @@
-//2006 - 6
+//2006 - 4
 
 import java.util.*;
 
@@ -27,6 +27,11 @@ public class LargePlantlikeStructure{
         int rawStart = Integer.parseInt(tempArray[0]);
         int rawEnd = Integer.parseInt(tempArray[1]);
         
+        if(rawStart == rawEnd){
+          System.out.println("path from " + rawStart + " to " + rawEnd + ": " + rawEnd);
+          continue;
+        }
+        
         ArrayList<Integer> parentsOfStart = new ArrayList<Integer>(); 
         ArrayList<Integer> parentsOfEnd = new ArrayList<Integer>(); 
         
@@ -34,33 +39,42 @@ public class LargePlantlikeStructure{
         int start = rawStart - 1;
         int end = rawEnd - 1;
         
-        boolean go = true;
-        while(go){
+        while(true){
+          if(start <= 0){
+            break;
+          }
           parentsOfStart.add(parentOf[start]);
-          start = parentOf[start];
-          if(parentOf[start] == 0){
-            go = false;
-          }
+          start = parentOf[start] - 1;
         }
         
-        go = true;
-        while(go){
+        while(true){
+          if(end <= 0){
+            break;
+          }
           parentsOfEnd.add(parentOf[end]);
-          end = parentOf[end];
-          if(parentOf[end] == 0){
-            go = false;
+          end = parentOf[end] - 1;
+        }
+        
+        //Find first place where arrays converge
+        int converge = 0;
+        System.out.print("path from " + rawStart + " to " + rawEnd + ": " + rawStart + " ");
+        for(int j = 0; j < parentsOfStart.size(); j++){
+          System.out.print(parentsOfStart.get(j) + " ");
+          if(parentsOfEnd.contains(parentsOfStart.get(j))){
+            //This is the convergent point - break loop
+            converge = parentsOfStart.get(j);
+            break;
           }
         }
         
-        //Find first place where arrays converge TODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODO
-        for(int j = 0; j < parentsOfStart.size(); j++){
-          for(int v = 0; v < parentsOfEnd.size(); v++){
-            if(parentsOfStart.get(j) == parentsOfEnd.get(v)){
-              //Switch array of focus
-            }
-          }
+        //Warning: element might not be found, in which case -1 is returned and loop will not execute
+        for(int j = parentsOfEnd.indexOf(converge) - 1; j > 0; j--){
+          System.out.print(parentsOfEnd.get(j) + " ");
         }
+        System.out.println(rawEnd);
         
       }
       
     }
+  }
+}
