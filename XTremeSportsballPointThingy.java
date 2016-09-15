@@ -22,7 +22,21 @@ public class SudokuVerifier{
          continue;
        }
        
+       int ways = 0;
        //We have a positive integer. Do stuff with it
+       for(int x = points; x > 0; x -= 3){
+         for(int y = x; y > 0; y -= 2){
+           int n = 0;
+           for(int z = y; z > 0; z--){
+             n++;
+           }
+           //Factoral n = (n!), and ways += n
+           int factoral = 1;
+           for(int v = 1; v <= n; v++){
+             factoral *= v;
+           }
+         }
+       }
        
        
     }
