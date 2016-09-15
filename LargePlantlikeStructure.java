@@ -39,16 +39,18 @@ public class LargePlantlikeStructure{
         int start = rawStart - 1;
         int end = rawEnd - 1;
         
+        parentsOfStart.add(rawStart);
         while(true){
-          if(start <= 0){
+          if(start < 0){
             break;
           }
           parentsOfStart.add(parentOf[start]);
           start = parentOf[start] - 1;
         }
         
+        parentsOfEnd.add(rawEnd);
         while(true){
-          if(end <= 0){
+          if(end < 0){
             break;
           }
           parentsOfEnd.add(parentOf[end]);
@@ -57,7 +59,7 @@ public class LargePlantlikeStructure{
         
         //Find first place where arrays converge
         int converge = 0;
-        System.out.print("path from " + rawStart + " to " + rawEnd + ": " + rawStart + " ");
+        System.out.print("path from " + rawStart + " to " + rawEnd + ": ");
         for(int j = 0; j < parentsOfStart.size(); j++){
           System.out.print(parentsOfStart.get(j) + " ");
           if(parentsOfEnd.contains(parentsOfStart.get(j))){
@@ -68,10 +70,10 @@ public class LargePlantlikeStructure{
         }
         
         //Warning: element might not be found, in which case -1 is returned and loop will not execute
-        for(int j = parentsOfEnd.indexOf(converge) - 1; j > 0; j--){
+        for(int j = parentsOfEnd.indexOf(converge) - 1; j >= 0; j--){
           System.out.print(parentsOfEnd.get(j) + " ");
         }
-        System.out.println(rawEnd);
+        System.out.println();
         
       }
       
