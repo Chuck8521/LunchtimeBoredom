@@ -2,7 +2,7 @@
 
 import java.util.*;
 
-public class SudokuVerifier{
+public class XTremeSportsballPointThingy{
 
   public static void main(String[] args){
   
@@ -22,23 +22,25 @@ public class SudokuVerifier{
          continue;
        }
        
-       int ways = 0;
+       int ways = 1;
        //We have a positive integer. Do stuff with it
+       int num3s = 0;
        for(int x = points; x > 0; x -= 3){
+         int num2s = 0;
          for(int y = x; y > 0; y -= 2){
-           int n = 0;
+           int num1s = 0;
            for(int z = y; z > 0; z--){
-             n++;
+             num1s++;
            }
-           //Factoral n = (n!), and ways += n
-           int factoral = 1;
-           for(int v = 1; v <= n; v++){
-             factoral *= v;
-           }
+           //I know here how many numbers of each are in this set - I need to find the number of unique permutations I can make
+           ways += (num1s + num2s + num3s) * (num1s + num2s + num3s);
+           num2s++;
          }
+         num3s++;
        }
-       
-       
+      
+     System.out.println(points + " points: " + ways + " ways");
+      
     }
   }
 }
