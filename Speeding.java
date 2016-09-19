@@ -9,22 +9,22 @@ public class Speeding {
     Scanner input = new Scanner(System.in);
     Scanner inputString = new Scanner(System.in);
     while(true){
-      System.out.println("Enter distance between checkpoints: ");
+      System.out.print("Enter distance between checkpoints: ");
       double distance = input.nextDouble();
       if(distance == 0.0){
         break;
       }
-      System.out.println("Enter time between checkpoints: ");
+      System.out.print("Enter time between checkpoints: ");
       double time = input.nextDouble();
-      System.out.println("Enter speed limit: ");
-      double speedlimit = input.nextDouble();
+      System.out.print("Enter speed limit: ");
+      double speedLimit = input.nextDouble();
       
       speedLimit *= (5280.0/3600.0);
       
       if(speedLimit > (distance/time)){
-        System.out.println("SPEEDING");
-      } else {
         System.out.println("NOT SPEEDING");
+      } else {
+        System.out.println("SPEEDING");
       }
       
       System.out.println();
