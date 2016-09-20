@@ -37,10 +37,12 @@ public class EgyptFractToFract {
       
       for(int x = 0; x < denoms.length; x++){
         if(x == denoms.length - 1){
-          //TODO
+          System.out.print("1/" + denoms[x] + " = ");
         }
-        System.out.print("1/" + denoms[x] + " + ")
+        System.out.print("1/" + denoms[x] + " + ");
       }
+      
+      System.out.println(numer + "/" + newDenom);
       
     }
     
