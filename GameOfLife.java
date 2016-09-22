@@ -9,7 +9,7 @@ public class GameOfLife {
     //Line 2: The 1st line of the life array (0 0 0 1 0 0 1 0)
     Scanner input = new Scanner(System.in);
     String in = input.nextLine();
-    int n = integer.parseInt(in);
+    int n = Integer.parseInt(in);
     
     //Current state
     int[][] currentBoard = new int[n][n];
