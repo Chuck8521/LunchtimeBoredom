@@ -183,32 +183,65 @@ public class GameOfLife {
           
         } else if (i == n - 1){
           //Bottom row
-          for(int v = x - 1; v < n + 2; v++){
+          for(int v = x - 1; v < x + 2; v++){
             if(currentBoard[0][v] == 1){
               alive++; 
             }
           }  
-          if(currentBoard[n - 1][x - 1] == 1){
+          if(currentBoard[i][x - 1] == 1){
            alive++; 
           }
-          if(currentBoard[n + 1][x + 1] == 1){
+          if(currentBoard[i][x + 1] == 1){
            alive++; 
           }
           for(int v = x - 1; v < x + 2; v++){
-            if(currentBoard[n + 1][v] == 1){
+            if(currentBoard[i - 1][v] == 1){
               alive++; 
             }
           }
         } else {
           //Center
-          //TODO
-          
+          for(int v = x - 1; v < x + 2; v++){
+            if(currentBoard[i + 1][v] == 1){
+              alive++; 
+            }
+            if(currentBoard[i - 1][v] == 1){
+              alive++; 
+            }
+          }  
+          if(currentBoard[i][x - 1] == 1){
+           alive++; 
+          }
+          if(currentBoard[i][x + 1] == 1){
+           alive++; 
+          }
         }
+        
+        //Rules
+        if(alive < 2 || alive > 3){
+          nextBoard[i][x] = 0;
+        } else if (alive == 3){
+          nextBoard[i][x] = 1;
+        } else {
+          nextBoard[i][x] = currentBoard[i][x];
+        }
+        
       }
     }
     
     //Format output all nice and stuff
+    String border = "";
+    for(int i = 0; i < n; i++){
+      for(int x = 0; x < n; x++){
+        System.out.print(nextBoard[i][x] + " ");
+      }
+      System.out.println();
+      border += "-";
+    }
     
+    System.out.println(border);
+    
+    //TODO Set currentBoard equal to nextBoard and clear next board, then loop around
     
   }
 
