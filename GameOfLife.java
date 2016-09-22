@@ -83,6 +83,22 @@ public class GameOfLife {
           }
         } else if (i == 0){
           //Top row
+          for(int v = x - 1; v < n + 2; v++){
+            if(currentBoard[n - 1][v] == 1){
+              alive++; 
+            }
+          }  
+          if(currentBoard[0][x - 1] == 1){
+           alive++; 
+          }
+          if(currentBoard[0][x + 1] == 1){
+           alive++; 
+          }
+          for(int v = x + 1; v < x + 2; v++){
+            if(currentBoard[1][v] == 1){
+              alive++; 
+            }
+          }
         } else if (x == 0 && i == n - 1){
           //Bottom left corner
           
@@ -112,6 +128,21 @@ public class GameOfLife {
           
         } else if (x == 0){
           //Left side
+          for(int v = i - 1; v < i + 2; v++){
+            if(currentBoard[v][n - 1] == 1){
+              alive++; 
+            }
+            if(currentBoard[v][x + 1] == 1){
+              alive++; 
+            }
+          }  
+          if(currentBoard[i - 1][x] == 1){
+           alive++; 
+          }
+          if(currentBoard[i + 1][x] == 1){
+           alive++; 
+          }
+          
         } else if (i == n - 1 && x == n - 1){
           //Bottom right corner
           
@@ -135,10 +166,43 @@ public class GameOfLife {
           
         } else if (x == n - 1){
           //Right side
+          for(int v = i - 1; v < i + 2; v++){
+            if(currentBoard[v][0] == 1){
+              alive++; 
+            }
+            if(currentBoard[v][x - 1] == 1){
+              alive++; 
+            }
+          }  
+          if(currentBoard[i - 1][x] == 1){
+           alive++; 
+          }
+          if(currentBoard[i + 1][x] == 1){
+           alive++; 
+          }
+          
         } else if (i == n - 1){
           //Bottom row
+          for(int v = x - 1; v < n + 2; v++){
+            if(currentBoard[0][v] == 1){
+              alive++; 
+            }
+          }  
+          if(currentBoard[n - 1][x - 1] == 1){
+           alive++; 
+          }
+          if(currentBoard[n + 1][x + 1] == 1){
+           alive++; 
+          }
+          for(int v = x - 1; v < x + 2; v++){
+            if(currentBoard[n + 1][v] == 1){
+              alive++; 
+            }
+          }
         } else {
           //Center
+          //TODO
+          
         }
       }
     }
