@@ -13,16 +13,17 @@ public class Associativity {
     for(int i = 0; i < times; i++){
     
       int size = input.nextInt();
-      ArrayList<Integer> nums = new ArrayList<Integer>();
+      int[][] nums = new int[size][size];
       for(int x = 0; x < size; x++){
         String temp = inputString.nextLine();
         String[] letters = temp.split(" ");
         for(int y = 0; y < letters.length; y++){
-          nums.add(Integer.parseInt(letters[y]));
+          nums[x][y] = Integer.parseInt(letters[y]));
         }
       }
       
       //TODO
+      
     
     }
     
