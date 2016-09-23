@@ -12,8 +12,19 @@ public class MeanMedianMode {
 
     for(int i = 0; i < times; i++){
       
+      int size = input.nextInt();//THIS CAN EXCEED INT VALUES: PROBABLY NOT GOOD
+      ArrayList<Integer> nums = new ArrayList<Integer>();
+      int sum = 0;
+      for(int x = 0; x < size; x++){
+        int temp = input.nextLine();
+        sum += temp;
+        nums.add(temp);
+      }
       
-      int size = input.nextInt();
+      double average = (double) temp / (double) size;
+      System.out.println("Mean: " + average);
+      
+      //TODO
       
     }
     
