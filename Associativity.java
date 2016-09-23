@@ -23,8 +23,9 @@ public class Associativity {
         }
       }
       
-      //TODO Test all letters and operations in the form (a @ a) @ a = a @ (a @ a)
+      //Test all letters and operations in the form (a @ a) @ a = a @ (a @ a)
       int firstTotal = 0;
+      valid = true;
       for(int v = 0; v < size; v++){
         for(int y = 0; y < size; y++){
           for(int x = 0; x < size; x++){
@@ -33,10 +34,19 @@ public class Associativity {
             int otherWay = nums[x][v];
             int otherSum = nums[y][otherWay];
             if(sum != otherSum){
-              System.out.println("not associative: " + )
+              char a = (char) y + 97;
+              char b = (char) x + 97;
+              char c = (char) v + 97;
+              System.out.println("not associative: " + y + " " + x + " " + v + " ");
+              valid = false;
+              break;
             }
           }
         }
+      }
+      
+      if(valid){
+        System.out.println("associative");
       }
     
     }
