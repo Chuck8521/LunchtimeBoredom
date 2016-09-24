@@ -18,14 +18,15 @@ public class Associativity {
         String temp = inputString.nextLine();
         String[] letters = temp.split(" ");
         for(int y = 0; y < letters.length; y++){
-          int ascii = (int) letters[y];
-          nums[x][y] = asci - 97;
+          String current = letters[y];
+          int ascii = (int) current.charAt(0);
+          nums[x][y] = ascii - 97;
         }
       }
       
       //Test all letters and operations in the form (a @ a) @ a = a @ (a @ a)
       int firstTotal = 0;
-      valid = true;
+      boolean valid = true;
       for(int v = 0; v < size; v++){
         for(int y = 0; y < size; y++){
           for(int x = 0; x < size; x++){
@@ -33,11 +34,11 @@ public class Associativity {
             int sum = nums[test][v];
             int otherWay = nums[x][v];
             int otherSum = nums[y][otherWay];
-            if(sum != otherSum){
-              char a = (char) y + 97;
-              char b = (char) x + 97;
-              char c = (char) v + 97;
-              System.out.println("not associative: " + y + " " + x + " " + v + " ");
+            if(sum != otherSum && valid){
+              char a = (char) (y + 97);
+              char b = (char) (x + 97);
+              char c = (char) (v + 97);
+              System.out.println("not associative: " + a + " " + b + " " + c + " ");
               valid = false;
               break;
             }
