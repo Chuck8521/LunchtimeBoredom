@@ -2,7 +2,7 @@
 
 import java.util.*;
 
-public class Decryptoid {
+public class HelloWorld {
 
   public static void main(String[] args){
 
@@ -11,13 +11,13 @@ public class Decryptoid {
     String output = "";
     
     for(int i = 0; i < in.length(); i++){
-      
+        
       char test = in.charAt(i);
-      if(isLetter(test)){
-        test + 2;
+       int value = test;
+      if(Character.isLetter(test)){
+        value += 2;
       }
-      
-      output += char;
+      output += Character.toChars(value);
       
     }
     
