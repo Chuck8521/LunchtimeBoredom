@@ -17,7 +17,8 @@ public class HelloWorld {
       if(Character.isLetter(test)){
         value += 2;
       }
-      output += Character.toChars(value);
+      char temp = (char) value;
+      output += temp;
       
     }
     
