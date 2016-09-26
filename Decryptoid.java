@@ -2,7 +2,7 @@
 
 import java.util.*;
 
-public class HelloWorld {
+public class Decryptoid {
 
   public static void main(String[] args){
 
