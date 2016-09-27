@@ -23,6 +23,26 @@ public class MeanMedianMode {
       
       double average = (double) temp / (double) size;
       System.out.println("Mean: " + average);
+
+      //Restriction is that numbers are between 0 and 99. Use the hint
+      int high = -1;
+      int mode = -1;
+      for(int x = 0; x <= 99; x++){
+         int counter = 0;
+         int test = nums.get(x);
+         if(test == -1) continue;
+         for(int j = x + 1; j <= 99; j++){
+            if(test == nums.get(x)){
+             counter++; 
+              nums.set(j, -1);
+            }
+         }
+        if(counter > high){
+          high = counter; 
+          mode = test;
+        }
+        nums.set(x, -1);
+      }
       
       //TODO
       
