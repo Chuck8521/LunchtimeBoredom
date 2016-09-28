@@ -23,10 +23,20 @@ public class MeanMedianMode {
       
       double average = (double) temp / (double) size;
       System.out.println("Mean: " + average);
+      
+      //Median
+      Collections.sort(nums);
+      int index = nums.size();
+      if(index % 2 == 0){
+       //Two medians
+        System.out.println("Median(s): " + nums.get(index/2) + " " + nums.get((index/2) - 1));
+      } else {
+        System.out.println("Median(s): " + nums.get(index/2));
+      }
 
       //Restriction is that numbers are between 0 and 99. Use the hint
       int high = -1;
-      int mode = -1;
+      ArrayList<Integer> mode = new ArrayList<Integer>();
       for(int x = 0; x <= 99; x++){
          int counter = 0;
          int test = nums.get(x);
@@ -39,12 +49,22 @@ public class MeanMedianMode {
          }
         if(counter > high){
           high = counter; 
-          mode = test;
+          mode.clear();
+          mode.add(test);
+        } else if {
+          mode.add(test);
         }
         nums.set(x, -1);
       }
       
-      //TODO
+      
+      
+      System.out.print("Modes(s): ");
+      for(int x = 0; x < mode.size(); x++){
+        System.out.print(mode.get(x) + " "); 
+      }
+      System.out.println("(occurs " + high + " times)"); 
+      
       
     }
     
