@@ -21,14 +21,57 @@ public class ThatDelicateBalance {
     for(int i = 0; i < times; i++){
       
       int initialWeight = input.nextInt();
-      int w = initialWeight;
       
-      for(int j = 0; j < 20; j++){
-        if((thatfunction(j) < Math.abs(w)) && thatfunction(j + 1) > Math.abs(w)){
+      int leftW = initialWeight;
+      int rightW = 0;
+      
+      ArrayList<Integer> jValues = new ArrayList<Integer>();
+      for(int x = 0; x < 20; x++){
+        jValues.add(x);
+      }
+      
+      ArrayList<Integer> basketR = new ArrayList<Integer>();
+      ArrayList<Integer> basketL = new ArrayList<Integer>();
+      
+      while(true){
+        
+      int w = leftW - rightW;
+      
+      if(w == 0){
+        //solved
+        //TODO output
+        System.out.print(initialWeight + " ");
+        Collections.sort(basketR);
+        Collections.sort(basketL);
+        //TODOTODOTODOTODOTODOTODO
+        for(int x = 0; x < basketR.size(); x++){
+         System.out.print(basketR.get(x) + " "); 
+        }
+        for(int x = 0; x < basketL.size(); x++){
+         System.out.print(basketL.get(x) + " "); 
+        }
+        System.out.println();
+        
+      }
+      for(int j = 0; j < jValues.size() - 1; j++){
+        if((thatfunction(jValues.get(j)) < Math.abs(w)) && thatfunction(jValues.get(j) + 1) > Math.abs(w)){//Fiddle with this
           //We have the j we're looking for
-          //TODO
+          //Place the weight 3^j into lighter basket
+          if(w > 0){
+            //right is lighter basket
+            rightW += Math.pow(3, j);
+            basketR.add(-1 * Math.pow(3, j));
+            jValues.remove(jValues.indexOf(j));
+          } else {
+            //left is lighter basket
+            leftW += Math.pow(3, j);
+            basketL.add(Math.pow(3, j));
+            jValues.remove(jValues.indexOf(j));
+          }
         }
       }
+        
+      }//End while
       
     }
     
