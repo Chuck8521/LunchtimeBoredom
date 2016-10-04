@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 class Point{
   
@@ -30,7 +31,7 @@ class NodeComparator implements Comparator<Node>{
   @Override
   public int compare(Node n1, Node n2) {
 	  //TODO AHHHHHHHHHHHHHHHHHHHHHHH HARD CODED
-      return n1.gCost(new Point(1,5)) - n2.gCost(new Point(1,5));
+      return n1.gCost(new Point(1,4)) - n2.gCost(new Point(1,4));
    }
 }
 
@@ -120,21 +121,64 @@ class SearchAlgorithms {
   public static void main(String[] args){
     //Add code to select method of search
     //For now, just A* graph search
-    /*Scanner input = new Scanner(System.in);
-    int lines = input.nextInt();     TODO INPUT STUFFS, FOR NOW JUST HARD CODE - TRUE = WALL*/
-    boolean[][] board = {{true, true, true, true, true, true, true}, {true, false, false, true, false, false, true}, {true, true, false, true, false, false, true}, {true, false, false, true, false, false, true}, {true, false, false, true, false, true, true}, {true, false, false, false, false, false, true}, {true, true, true, true, true, true, true}};
-    Point startState = new Point(5,1);
-    Point endState = new Point(1,5);
-    System.out.println("begin");
-    ArrayList<Point> solution = AStarGraphSearch(startState, endState, board);
-    if(solution == null){
-      System.out.println("failure"); 
-    } else {
-      System.out.println("success");
-      for(Point p : solution){
-         System.out.println("(" + p.getX() + "," + p.getY() + ")");
-      } 
-    }
+    //Read each line. A 1 = a wall (true). A 0 = an open space. TODO - Add support for different costs?
+    try{
+      File file = new File("maze.txt");
+	   FileReader fileReader = new FileReader(file);
+	   BufferedReader input = new BufferedReader(fileReader);
+      //The first line of the file must be a number representing n (where the n * n maze follows on the next n lines)
+      String raw = input.readLine();
+      int n = Integer.parseInt(raw);
+      
+      boolean[][] board = new boolean[n][n];
+      
+      Point startState = null;
+      Point endState = null;
+      
+      //The next n lines contain 0s and 1s with no spaces between, representing the maze. ex 1000101010000101101
+      //Start Point = S, End Point = F
+      for(int i = 0; i < n; i++){
+        String line = input.readLine();
+        for(int x = 0; x < line.length(); x++){
+           char number = line.charAt(x);
+           if(number == '0'){
+              //Put false in array
+              board[i][x] = false;//TODO What if I can switch it so the output isn't weird and rotated due to x and y switching places?
+           } else if (number == '1'){
+              //Put true in array
+              board[i][x] = true;
+           } else if (number == 'S'){
+              startState = new Point(i,x);
+              board[i][x] = false;
+           } else if (number == 'F'){
+              endState = new Point(i,x);
+              board[i][x] = false;
+           }
+        }
+      }
+    
+      if(startState != null && endState != null){
+   
+        ArrayList<Point> solution = AStarGraphSearch(startState, endState, board);
+        if(solution == null){
+          System.out.println("failure"); 
+        } else {
+          System.out.println("success");
+          for(Point p : solution){
+             //Convert to our humanoid Cartesian standard
+             System.out.println("(" + (p.getY() + 1) + "," + (p.getX() + 1) + ")");
+          } 
+        }
+      
+      } else {
+        System.out.println("There is a problem with your input file. Please make sure you have a start point (S) and end point (F)");
+      }
+    
+    } catch (IOException error) { //Need this for using buffered readers
+			error.printStackTrace();
+	 }
+
+    
   }
   
   
@@ -147,7 +191,7 @@ class SearchAlgorithms {
     fringe.add(start);
     
     while(true){
-    	System.out.println("continue");
+    
       if(fringe.size() == 0){
         return null;//essentially an empty list? BAD PRACTICE TODO
       }
