@@ -84,7 +84,6 @@ class Node {
       tempList.add(temp);
       Node above = new Node(tempList, temp, cost + 1);
       moves.add(above);
-      //path.remove(path.size() - 1);//Takes last element(what we just added) out
     }
     if(!board[state.getX()][state.getY() - 1]){//WARNING - Works only when walls border everything on all sides
       Point temp = new Point(state.getX(), state.getY() - 1);
@@ -92,7 +91,6 @@ class Node {
       tempList.add(temp);
       Node below = new Node(tempList, temp, cost + 1);
       moves.add(below);
-      //path.remove(path.size() - 1);//Takes last element(what we just added) out
     }
     if(!board[state.getX() - 1][state.getY()]){
       Point temp = new Point(state.getX() - 1, state.getY());
@@ -100,7 +98,6 @@ class Node {
       tempList.add(temp);
       Node left = new Node(tempList, temp, cost + 1);
       moves.add(left);
-      //path.remove(path.size() - 1);//Takes last element(what we just added) out
     }
     if(!board[state.getX() + 1][state.getY()]){
       Point temp = new Point(state.getX() + 1, state.getY());
@@ -108,7 +105,6 @@ class Node {
       tempList.add(temp);
       Node right = new Node(tempList, temp, cost + 1);
       moves.add(right);
-      //path.remove(path.size() - 1);//Takes last element(what we just added) out
     }
     
     return moves;
@@ -143,7 +139,7 @@ class SearchAlgorithms {
            char number = line.charAt(x);
            if(number == '0'){
               //Put false in array
-              board[i][x] = false;//TODO What if I can switch it so the output isn't weird and rotated due to x and y switching places?
+              board[i][x] = false;
            } else if (number == '1'){
               //Put true in array
               board[i][x] = true;
