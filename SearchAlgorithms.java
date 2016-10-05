@@ -30,8 +30,8 @@ class NodeComparator implements Comparator<Node>{
 	
   @Override
   public int compare(Node n1, Node n2) {
-	  //TODO AHHHHHHHHHHHHHHHHHHHHHHH HARD CODED
-      return n1.gCost(new Point(1,4)) - n2.gCost(new Point(1,4));
+	  //TODO Test and verify completeness
+      return n1.gCost() - n2.gCost();
    }
 }
 
@@ -39,19 +39,22 @@ class Node {
   
   ArrayList<Point> path = new ArrayList<Point>();
   Point state;
+  Point end;
   int cost;
   
-  public Node(ArrayList<Point> pathTo, Point currentState, int costTo){
+  public Node(ArrayList<Point> pathTo, Point currentState, Point endState, int costTo){
     this.path = pathTo;
     this.state = currentState;
+    this.end = endState;
     this.cost = costTo;//TODO cost problems on the comparator?
   }
   
   //@Override
-  public Node(Point currentState){
+  public Node(Point currentState, Point endState){
     //First node
     this.state = currentState;
     path.add(state);
+    this.end = endState;
     this.cost = 0;
   }
   
@@ -71,42 +74,35 @@ class Node {
 	  }
   }
   
-  public int gCost(Point end){
+  public int gCost(){
     return cost + state.getManhattenDist(end);
   }
   
   public ArrayList<Node> allPossibleMoves(boolean[][] board){
     ArrayList<Node> moves = new ArrayList<Node>();
-    //Check to see if Points above below left and right are open, or if there is a wall TODO Loop this
-    if(!board[state.getX()][state.getY() + 1]){
-      Point temp = new Point(state.getX(), state.getY() + 1);
-      ArrayList<Point> tempList = new ArrayList<Point>(path);
-      tempList.add(temp);
-      Node above = new Node(tempList, temp, cost + 1);
-      moves.add(above);
+    //Check to see if Points above below left and right are open, or if there is a wall.
+    //Loop runs twice for conciseness of code
+    for(int i = -1; i < 2; i += 2){
+		
+	  	//Code only runs when the boardering space does not contain true (a wall)
+   	 if(!board[state.getX()][state.getY() + i]){
+    	  Point temp = new Point(state.getX(), state.getY() + i);
+      	ArrayList<Point> tempList = new ArrayList<Point>(path);
+	      tempList.add(temp);
+  	    Node abovebelow = new Node(tempList, temp, end, cost + 1);//TODO variable costs?
+    	  moves.add(abovebelow);
+    	}
+
+	    if(!board[state.getX() + i][state.getY()]){
+  	    Point temp = new Point(state.getX() + i, state.getY());
+    	  ArrayList<Point> tempList = new ArrayList<Point>(path);
+ 	     tempList.add(temp);
+  	    Node right = new Node(tempList, temp, end, cost + 1);
+    	  moves.add(right);
+  	  }
+	  	  
     }
-    if(!board[state.getX()][state.getY() - 1]){//WARNING - Works only when walls border everything on all sides
-      Point temp = new Point(state.getX(), state.getY() - 1);
-      ArrayList<Point> tempList = new ArrayList<Point>(path);
-      tempList.add(temp);
-      Node below = new Node(tempList, temp, cost + 1);
-      moves.add(below);
-    }
-    if(!board[state.getX() - 1][state.getY()]){
-      Point temp = new Point(state.getX() - 1, state.getY());
-      ArrayList<Point> tempList = new ArrayList<Point>(path);
-      tempList.add(temp);
-      Node left = new Node(tempList, temp, cost + 1);
-      moves.add(left);
-    }
-    if(!board[state.getX() + 1][state.getY()]){
-      Point temp = new Point(state.getX() + 1, state.getY());
-      ArrayList<Point> tempList = new ArrayList<Point>(path);
-      tempList.add(temp);
-      Node right = new Node(tempList, temp, cost + 1);
-      moves.add(right);
-    }
-    
+		
     return moves;
   }
   
@@ -183,13 +179,13 @@ class SearchAlgorithms {
     HashSet<Point> closed = new HashSet<Point>();
     Comparator<Node> comparator = new NodeComparator();
     PriorityQueue<Node> fringe = new PriorityQueue<Node>(1, comparator);
-    Node start = new Node(startState);
+    Node start = new Node(startState, end);
     fringe.add(start);
     
     while(true){
     
       if(fringe.size() == 0){
-        return null;//essentially an empty list? BAD PRACTICE TODO
+        return null;//essentially an empty list - this is tested for and called failure
       }
       
       //Remove the next node based on the heuristic
