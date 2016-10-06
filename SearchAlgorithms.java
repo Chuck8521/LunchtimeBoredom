@@ -35,6 +35,15 @@ class NodeComparator implements Comparator<Node>{
    }
 }
 
+class NodeDepthComparator implements Comparator<Node>{
+	
+  @Override
+  public int compare(Node n1, Node n2) {
+	  //TODO Test and verify completeness and that it actually tests depth
+      return n1.getPath().size() - n2.getPath.size();
+   }
+}
+
 class Node {
   
   ArrayList<Point> path = new ArrayList<Point>();
@@ -126,6 +135,9 @@ class SearchAlgorithms {
       
       Point startState = null;
       Point endState = null;
+			
+			//The second line must tell the search algorithm preferred, i.e. DFS or A* for right now
+			String searchMethod = input.readLine();
       
       //The next n lines contain 0s and 1s with no spaces between, representing the maze. ex 1000101010000101101
       //Start Point = S, End Point = F
@@ -149,9 +161,20 @@ class SearchAlgorithms {
         }
       }
     
+			//TODO Add option for search algorithm
+			
       if(startState != null && endState != null){
-   
-        ArrayList<Point> solution = AStarGraphSearch(startState, endState, board);
+				
+				ArrayList<Point> solution;
+   			
+				if(searchMethod.equals("DFS")){
+					solution = DepthFirstSearch(startState, endState, board);
+				} else if (searchMethod.equals("A*")){
+					solution = AStarGraphSearch(startState, endState, board);
+				} else {
+					solution = null;	
+				}
+        
         if(solution == null){
           System.out.println("failure"); 
         } else {
@@ -173,6 +196,41 @@ class SearchAlgorithms {
     
   }
   
+	public static ArrayList<Point> DepthFirstSearch (Point startState, Point end, boolean[][] board){
+	
+		//Go to the deepest node on the fringe first
+		Comparator<Node> comparator = new NodeDepthComparator();
+    PriorityQueue<Node> fringe = new PriorityQueue<Node>(1, comparator);
+    Node start = new Node(startState, end);
+    fringe.add(start);
+		
+		while(true){
+			
+			if(fringe.size() == 0){
+        return null;//essentially an empty list - this is tested for and called failure
+      }
+			
+			//Remove the next deepest node
+      Node test = fringe.poll();
+      //if goal test is satisfied, return solution
+      if(test.isGoal(end)){
+        //Solution found!
+        //Return path to main method
+        return test.getPath();
+      }
+			
+			//If not, expand all options and add them to the fringe
+			//foreach child node of the current state
+      ArrayList<Node> children = test.allPossibleMoves(board);
+      for(Node n : children){
+        //insert the node into the fringe
+        fringe.add(n);
+      }
+      
+			
+		}
+		
+	}
   
   
   public static ArrayList<Point> AStarGraphSearch(Point startState, Point end, boolean[][] board){
