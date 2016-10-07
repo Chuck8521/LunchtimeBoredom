@@ -202,7 +202,7 @@ class SearchAlgorithms {
 		Comparator<Node> comparator = new NodeDepthComparator();
     PriorityQueue<Node> fringe = new PriorityQueue<Node>(1, comparator);
     Node start = new Node(startState, end);
-    fringe.add(start);
+    fringe.add(start, end);
 		
 		while(true){
 			
