@@ -1,185 +1,66 @@
 import java.util.*;
 import java.io.*;
 
-class Point{
-  
-  int x;
-  int y;
-  
-  public Point(int x, int y){
-    this.x = x;
-    this.y = y;
-  }
-  
-  public int getX(){
-    return x; 
-  }
-  
-  public int getY(){
-    return y; 
-  }
-  
-  public int getManhattenDist(Point end){
-    int dist = Math.abs(x - end.getX()) + Math.abs(y - end.getY());
-    return dist; 
-  }
-  
-}
-
-class NodeComparator implements Comparator<Node>{
-	
-  @Override
-  public int compare(Node n1, Node n2) {
-	  //TODO Test and verify completeness
-      return n1.gCost() - n2.gCost();
-   }
-}
-
 class NodeDepthComparator implements Comparator<Node>{
 	
   @Override
   public int compare(Node n1, Node n2) {
-	  //TODO Test and verify completeness and that it actually tests depth
+	  //TODO This
       return n1.getPath().size() - n2.getPath.size();
    }
 }
 
 class Node {
-  
-  ArrayList<Point> path = new ArrayList<Point>();
-  Point state;
-  Point end;
-  int cost;
-  
-  public Node(ArrayList<Point> pathTo, Point currentState, Point endState, int costTo){
-    this.path = pathTo;
-    this.state = currentState;
-    this.end = endState;
-    this.cost = costTo;//TODO cost problems on the comparator?
+	
+	int assignedValue;
+	
+	public Node(){
+		this.assignedValue = 0;
+	}
+ 	
+  public Node(int assigned){
+    this.assignedValue = assigned;
   }
   
-  //@Override
-  public Node(Point currentState, Point endState){
-    //First node
-    this.state = currentState;
-    path.add(state);
-    this.end = endState;
-    this.cost = 0;
-  }
-  
-  public Point getCurrentState(){
-    return state; 
-  }
-  
-  public ArrayList<Point> getPath(){
-    return path; 
-  }
-  
-  public boolean isGoal(Point end){
-	  if((end.getX() == state.getX()) && (end.getY() == state.getY())){
-		  return true;
-	  } else {
-		  return false;
-	  }
-  }
-  
-  public int gCost(){
-    return cost + state.getManhattenDist(end);
-  }
-  
-  public ArrayList<Node> allPossibleMoves(boolean[][] board){
-    ArrayList<Node> moves = new ArrayList<Node>();
-    //Check to see if Points above below left and right are open, or if there is a wall.
-    //Loop runs twice for conciseness of code
-    for(int i = -1; i < 2; i += 2){
-		
-	  	//Code only runs when the boardering space does not contain true (a wall)
-   	 if(!board[state.getX()][state.getY() + i]){
-    	  Point temp = new Point(state.getX(), state.getY() + i);
-      	ArrayList<Point> tempList = new ArrayList<Point>(path);
-	      tempList.add(temp);
-  	    Node abovebelow = new Node(tempList, temp, end, cost + 1);//TODO variable costs?
-    	  moves.add(abovebelow);
-    	}
-
-	    if(!board[state.getX() + i][state.getY()]){
-  	    Point temp = new Point(state.getX() + i, state.getY());
-    	  ArrayList<Point> tempList = new ArrayList<Point>(path);
- 	     tempList.add(temp);
-  	    Node right = new Node(tempList, temp, end, cost + 1);
-    	  moves.add(right);
-  	  }
-	  	  
-    }
-		
-    return moves;
-  }
   
 }
 
 class SudokuSolver {
 
   public static void main(String[] args){
-    //Add code to select method of search
-    //For now, just A* graph search
-    //Read each line. A 1 = a wall (true). A 0 = an open space. TODO - Add support for different costs?
+    //Read each line. 9X9 Sudoku Grid with known values written, 0 where values unknown. See sudoku.txt
     try{
-      File file = new File("maze.txt");
-	   FileReader fileReader = new FileReader(file);
-	   BufferedReader input = new BufferedReader(fileReader);
-      //The first line of the file must be a number representing n (where the n * n maze follows on the next n lines)
-      String raw = input.readLine();
-      int n = Integer.parseInt(raw);
+      File file = new File("sudoku.txt");//TODO Actually make this
+	    FileReader fileReader = new FileReader(file);
+			BufferedReader input = new BufferedReader(fileReader);
       
-      boolean[][] board = new boolean[n][n];
-      
-      Point startState = null;
-      Point endState = null;
-			
-			//The second line must tell the search algorithm preferred, i.e. DFS or A* for right now
-			String searchMethod = input.readLine();
-      
-      //The next n lines contain 0s and 1s with no spaces between, representing the maze. ex 1000101010000101101
-      //Start Point = S, End Point = F
-      for(int i = 0; i < n; i++){
+      Node[][] board = new Node[9][9];
+
+      //The next 9 lines contain 0s and assigned numbers in the sudoku problem
+      for(int i = 0; i < 9; i++){
         String line = input.readLine();
-        for(int x = 0; x < line.length(); x++){
+        for(int x = 0; x < 9; x++){
            char number = line.charAt(x);
            if(number == '0'){
-              //Put false in array
-              board[i][x] = false;
-           } else if (number == '1'){
-              //Put true in array
-              board[i][x] = true;
-           } else if (number == 'S'){
-              startState = new Point(i,x);
-              board[i][x] = false;
-           } else if (number == 'F'){
-              endState = new Point(i,x);
-              board[i][x] = false;
-           }
+              board[i][x] = new Node();
+           } else {
+							board[i][x] = new Node(Integer.parseInt(number)); 
+					 }
         }
       }
     
-			//TODO Add option for search algorithm
-			
-      if(startState != null && endState != null){
 				
-				ArrayList<Point> solution = DepthFirstSearch(startState, endState, board);
+				Node[][] solution = DepthFirstSearch(board);
    			
-        if(solution == null){
-          System.out.println("failure"); 
-        } else {
-          System.out.println("success");
-          for(Point p : solution){
-             //Convert to our humanoid Cartesian standard
-             System.out.println("(" + (p.getY() + 1) + "," + (p.getX() + 1) + ")");
-          } 
-        }
-      
+      if(solution == null){
+        System.out.println("failure"); 
       } else {
-        System.out.println("There is a problem with your input file. Please make sure you have a start point (S) and end point (F)");
-      }
+        System.out.println("success");
+				for(Point p : solution){
+           //Print entire solution TODO
+           System.out.println();
+        }
+			}
     
     } catch (IOException error) { //Need this for using buffered readers
 			error.printStackTrace();
@@ -188,12 +69,11 @@ class SudokuSolver {
     
   }
   
-	public static ArrayList<Point> DepthFirstSearch (Point startState, Point end, boolean[][] board){
+	public static ArrayList<Point> DepthFirstSearch (Node[][] board){
 	
 		//Go to the deepest node on the fringe first
 		Comparator<Node> comparator = new NodeDepthComparator();
     PriorityQueue<Node> fringe = new PriorityQueue<Node>(1, comparator);
-    Node start = new Node(startState, end);
     fringe.add(start, end);
 		
 		while(true){
@@ -205,7 +85,7 @@ class SudokuSolver {
 			//Remove the next deepest node
       Node test = fringe.poll();
       //if goal test is satisfied, return solution
-      if(test.isGoal(end)){
+      if(test.isGoal(end)){//TODOTODOTODOTODOTODOTODOTODOTODOTODO
         //Solution found!
         //Return path to main method
         return test.getPath();
