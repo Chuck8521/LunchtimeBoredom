@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.*; //TODO Generate domain and search
 import java.io.*;
 
 class NodeDepthComparator implements Comparator<Node>{
@@ -13,6 +13,7 @@ class NodeDepthComparator implements Comparator<Node>{
 class Node {
 	
 	int assignedValue;
+	HashSet<Integer> domain = new HashSet<Integer>();
 	
 	public Node(){
 		this.assignedValue = 0;
@@ -21,6 +22,10 @@ class Node {
   public Node(int assigned){
     this.assignedValue = assigned;
   }
+	
+	public int getAssignedValue(){
+		return assignedValue;	
+	}
   
   
 }
@@ -50,14 +55,17 @@ class SudokuSolver {
       }
     
 				
-				Node[][] solution = DepthFirstSearch(board);
+			Node[][] solution = DepthFirstSearch(board);
    			
       if(solution == null){
         System.out.println("failure"); 
       } else {
         System.out.println("success");
-				for(Point p : solution){
-           //Print entire solution TODO
+				for(int i = 0; i < 9; i++){
+           //Print entire solution
+					 for(int x = 0; x < 9; x++){
+						 System.out.print(solution[i][x].getAssignedValue());
+					 }
            System.out.println();
         }
 			}
@@ -69,7 +77,7 @@ class SudokuSolver {
     
   }
   
-	public static ArrayList<Point> DepthFirstSearch (Node[][] board){
+	public static Node[][] DepthFirstSearch (Node[][] board){
 	
 		//Go to the deepest node on the fringe first
 		Comparator<Node> comparator = new NodeDepthComparator();
