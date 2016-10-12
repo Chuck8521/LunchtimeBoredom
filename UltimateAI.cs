@@ -15,11 +15,14 @@ public class UltimateAI : MonoBehaviour {
 		//TODO Take care of anywhere and the time that would take on depth 2...
 
 		State current = new State (smallBoards, totalBoard, nextMove);
-		ArrayList allPossible = current.getAllMoves ();
-		ArrayList moveUtils = new ArrayList();
+		//Calls agent 2, which is the maximizer (AI)
+		List<Object> allPossible = current.getAllMoves (current, 2);
+		List<int> moveUtils = new List<int>();
 
+		//In essence, this is the top maximizing node. So, when value is called, go MIN, MAX, MIN
 		for (int i = 0; i < allPossible.Count (); i++) {
-			moveUtils.Add (allPossible [i].value ());
+			//Get depth two
+			moveUtils.Add (allPossible [i].value (current, 2, 0, 1));
 		}
 
 
@@ -27,30 +30,26 @@ public class UltimateAI : MonoBehaviour {
 	}
 
 
-
-	int depth = 0;
-	//0 = max, 1 = min
-	int agent = 0;
-
-	int value (){
+	//1 = min, 2 = max
+	int value (State current, int maxDepth, int currentDepth, int agent){
 		//if state at depth 2 or sure win, return utility
-		if (depth == 2) {
+		if (currentDepth >= 2) {
 			return utility;//TODO
 		}
 
 		//if next is max, return max-value
-		if (agent == 0) {
-			return maxValue (State);
+		if (agent == 2) {
+			return maxValue (State current);
 		}
 
 		//if next is min, return min-value
-		if (agent == 0) {
-			return minValue (State);
+		if (agent == 1) {
+			return minValue (State current);
 		}
 	}
 
 
-	int maxValue (State){
+	int maxValue (State current){
 		int v = -10000;
 		for(){
 			v = Mathf.Max(v, value(successor));//WARNING: Mathf, not Math. Does it matter?
@@ -58,7 +57,7 @@ public class UltimateAI : MonoBehaviour {
 		return v;
 	}
 
-	int minValue (State){
+	int minValue (State current){
 		int v = 10000;
 		for(){
 			v = Mathf.Min(v, value(successor));
@@ -79,10 +78,12 @@ class State : MonoBehaviour {
 		this.totalBoard = totalBoard;
 		this.nextMove = nextMove;
 	}
-
-	public ArrayList getAllMoves(State current){
+	
+	
+	//Agent: 1 = min, 2 = max
+	public List<Object> getAllMoves(State current, int agent){
 		int board = current.nextMove;
-		ArrayList allPossibleMoves = new ArrayList();
+		List<Object> allPossibleMoves = new List<Object>();
 		if(board == -1){
 			//TODO
 		} else {
@@ -90,13 +91,12 @@ class State : MonoBehaviour {
 				if(smallBoards[board, i] == 0){
 					//Open space = possible move!
 					int[,] tempSmall = smallBoards;
-					tempSmall[board, i] = 2;//TODO What about when I'm modeling the minimizer?
+					tempSmall[board, i] = agent;
 					int[] tempTotal = totalBoard;
 					if(CheckForWin(tempSmall, board)){
-						tempTotal[board] = 2;//TODO Ahhhhhh same as above
+						tempTotal[board] = agent;
 					}
-					int tempMove = nextMove;
-					tempMove = i;
+					int tempMove = i;
 					State possible = new State(tempSmall, tempTotal, tempMove);
 					allPossibleMoves.Add(possible);
 				}
