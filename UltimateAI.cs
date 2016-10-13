@@ -14,9 +14,9 @@ public class UltimateAI : MonoBehaviour {
 	public GameObject move(int[,] smallBoards, int[] totalBoard, int nextMove){
 		//TODO Take care of anywhere and the time that would take on depth 2...
 
-		State current = new State (smallBoards, totalBoard, nextMove);
+		State current = new State (smallBoards, totalBoard, nextMove, 2);
 		//Calls agent 2, which is the maximizer (AI)
-		List<Object> allPossible = current.getAllMoves (current, 2);
+		List<State> allPossible = current.getAllMoves (current, 2);
 		List<int> moveUtils = new List<int>();
 
 		//In essence, this is the top maximizing node. So, when value is called, go MIN, MAX, MIN
@@ -24,10 +24,13 @@ public class UltimateAI : MonoBehaviour {
 		for (int i = 0; i < allPossible.Count (); i++) {
 			//Get depth two
 			moveUtils.Add (allPossible [i].value (current, 4, 0, 1));
-			maxPossible = max(maxPossible, moveUtils.get(i));
+			maxPossible = Mathf.Max(maxPossible, moveUtils.get(i));
 		}
-
-
+		
+		State bestMove = allPossible.get(moveUtils.indexOf(maxPossible))
+		//Determine which button needs to be pressed... and return. 
+		//Wow, that means I need to reference every single button from this. Well, there goes my weekend.
+		//TODO
 		return new GameObject();
 	}
 
@@ -41,12 +44,12 @@ public class UltimateAI : MonoBehaviour {
 
 		//if next is max, return max-value
 		if (agent == 2) {
-			return maxValue (State current, maxDepth, currentDepth, 2);
+			return maxValue (current, maxDepth, currentDepth, 2);
 		}
 
 		//if next is min, return min-value
 		if (agent == 1) {
-			return minValue (State current, maxDepth, currentDepth, 1);
+			return minValue (current, maxDepth, currentDepth, 1);
 		}
 	}
 
@@ -61,7 +64,7 @@ public class UltimateAI : MonoBehaviour {
 			nextAgent = 1;	
 		}
 		foreach(element successor in current.getAllMoves(current, agentNum)){
-			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, nextAgent));//WARNING: Mathf, not Math. Does it matter?
+ 			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, nextAgent));//WARNING: Mathf, not Math. Does it matter?
 		}//each successor of state
 		return v;
 	}
@@ -75,7 +78,7 @@ public class UltimateAI : MonoBehaviour {
 		} else {
 			nextAgent = 1;	
 		}
-		for(element successor in current.getAllMoves(current, agentNum)){
+		foreach(element successor in current.getAllMoves(current, agentNum)){
 			v = Mathf.Min(v, value(successor, maxDepth, currentDepth + 1, nextAgent));
 		}//each successor of state
 		return v;
@@ -88,20 +91,43 @@ class State : MonoBehaviour {
 	int[,] smallBoards;
 	int[] totalBoard;
 	int nextMove;
+	int agentNum;
 
-	public State(int[,] smallBoards, int[] totalBoard, int nextMove){
+	public State(int[,] smallBoards, int[] totalBoard, int nextMove, int agentNum){
 		this.smallBoards = smallBoards;
 		this.totalBoard = totalBoard;
 		this.nextMove = nextMove;
+		this.agentNum = agentNum;
 	}
 	
 	
 	//Agent: 1 = min, 2 = max
-	public List<Object> getAllMoves(State current, int agent){
+	public List<State> getAllMoves(State current, int agent){
 		int board = current.nextMove;
-		List<Object> allPossibleMoves = new List<Object>();
+		List<State> allPossibleMoves = new List<State>();
 		if(board == -1){
-			//TODO
+			//Return every open square in squares not already won.
+			for(int i = 0; i < 9; i++){
+				if(totalBoard[i] != 1 && totalBoard[i] != 2){
+					for(int x = 0; x < 9; x++){
+						if(smallBoard[i,x] == 0){
+							int[,] tempSmall = smallBoards;
+							tempSmall[i, x] = agent;
+							int[] tempTotal = totalBoard;
+							if(CheckForWin(tempSmall, i, agent)){//Instead of board being passed (-1), we pass the board number 
+									tempTotal[i] = agent;
+							}
+							int tempMove = x;
+							int nextAgent = 1;
+							if(agent == 1){
+								nextAgent = 2;	
+							}
+							State possible = new State(tempSmall, tempTotal, tempMove, nextAgent);
+							allPossibleMoves.Add(possible);
+						}
+					}
+				}
+			}
 		} else {
 			for(int i = 0; i < 9; i++){
 				if(smallBoards[board, i] == 0){
@@ -109,11 +135,15 @@ class State : MonoBehaviour {
 					int[,] tempSmall = smallBoards;
 					tempSmall[board, i] = agent;
 					int[] tempTotal = totalBoard;
-					if(CheckForWin(tempSmall, board)){
+					if(CheckForWin(tempSmall, board, agent)){
 						tempTotal[board] = agent;
 					}
 					int tempMove = i;
-					State possible = new State(tempSmall, tempTotal, tempMove);
+					int nextAgent = 1;
+					if(agent == 1){
+						nextAgent = 2;	
+					}
+					State possible = new State(tempSmall, tempTotal, tempMove, nextAgent);
 					allPossibleMoves.Add(possible);
 				}
 			}
@@ -125,14 +155,17 @@ class State : MonoBehaviour {
 
 	public int getValue(){
 		//TODO Get utility score of this state
+		int utility = 0;
+		
+		return utility;		
 	}
 
-	bool CheckForWin (int[,] board, int boardNum){
+	bool CheckForWin (int[,] board, int boardNum, int agentNum){
 
 		//1 = X
 		//2 = O
 
-		int theInt = 2;//TODO What about X?
+		int theInt = agentNum;
 
 		int[] s = new int[9];
 
