@@ -20,9 +20,11 @@ public class UltimateAI : MonoBehaviour {
 		List<int> moveUtils = new List<int>();
 
 		//In essence, this is the top maximizing node. So, when value is called, go MIN, MAX, MIN
+		int maxPossible = -10000;
 		for (int i = 0; i < allPossible.Count (); i++) {
 			//Get depth two
-			moveUtils.Add (allPossible [i].value (current, 2, 0, 1));
+			moveUtils.Add (allPossible [i].value (current, 4, 0, 1));
+			maxPossible = max(maxPossible, moveUtils.get(i));
 		}
 
 
@@ -33,34 +35,48 @@ public class UltimateAI : MonoBehaviour {
 	//1 = min, 2 = max
 	int value (State current, int maxDepth, int currentDepth, int agent){
 		//if state at depth 2 or sure win, return utility
-		if (currentDepth >= 2) {
+		if (currentDepth >= maxDepth) {
 			return utility;//TODO
 		}
 
 		//if next is max, return max-value
 		if (agent == 2) {
-			return maxValue (State current);
+			return maxValue (State current, maxDepth, currentDepth, 2);
 		}
 
 		//if next is min, return min-value
 		if (agent == 1) {
-			return minValue (State current);
+			return minValue (State current, maxDepth, currentDepth, 1);
 		}
 	}
 
 
-	int maxValue (State current){
+	int maxValue (State current, int maxDepth, int currentDepth, int agentNum){
 		int v = -10000;
-		for(){
-			v = Mathf.Max(v, value(successor));//WARNING: Mathf, not Math. Does it matter?
+		//Switch agentNum
+		int nextAgent;
+		if(agentNum == 1){
+			nextAgent = 2;
+		} else {
+			nextAgent = 1;	
+		}
+		foreach(element successor in current.getAllMoves(current, agentNum)){
+			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, nextAgent));//WARNING: Mathf, not Math. Does it matter?
 		}//each successor of state
 		return v;
 	}
 
-	int minValue (State current){
+	int minValue (State current, int maxDepth, int currentDepth, int agentNum){
 		int v = 10000;
-		for(){
-			v = Mathf.Min(v, value(successor));
+		//Switch agentNum
+		int nextAgent;
+		if(agentNum == 1){
+			nextAgent = 2;
+		} else {
+			nextAgent = 1;	
+		}
+		for(element successor in current.getAllMoves(current, agentNum)){
+			v = Mathf.Min(v, value(successor, maxDepth, currentDepth + 1, nextAgent));
 		}//each successor of state
 		return v;
 	}
