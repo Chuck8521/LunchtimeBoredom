@@ -1,18 +1,45 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class UltimateAI : MonoBehaviour {
+public class UltimateAI {
+
+	//TODO STUPID SHALLOW COPY PREVENTS TELLING WHERE THE MOVE WAS?!?!?
+
+	/*GameObject[,] buttons = new GameObject[9, 9];
+	//Try this?
+	GameObject[] button1 = new GameObject[9];
+	GameObject[] button2 = new GameObject[9];
+	GameObject[] button3 = new GameObject[9];
+	GameObject[] button4 = new GameObject[9];
+	GameObject[] button5 = new GameObject[9];
+	GameObject[] button6 = new GameObject[9];
+	GameObject[] button7 = new GameObject[9];
+	GameObject[] button8 = new GameObject[9];
+	GameObject[] button9 = new GameObject[9];*/
 
 	public UltimateAI(){
-		//Nothing to init rn
-		return;
+		//Just get buttons
+		/*this.button1 = button1;
+		this.button2 = button2;
+		this.button3 = button3;
+		this.button4 = button4;
+		this.button5 = button5;
+		this.button6 = button6;
+		this.button7 = button7;
+		this.button8 = button8;
+		this.button9 = button9;*/
+		Debug.Log ("Init AI");
 	}
 		
 
-	//Needs to return a button GameObject TODO TODO TODO TODO
+	//Needs to return a button GameObject
 	//nextMove is the board where you need to move next. -1 if anywhere (zero-based!)
-	public GameObject move(int[,] smallBoards, int[] totalBoard, int nextMove){
+	public GameObject move(int[,] smallBoards, int[] totalBoard, int nextMove, GameObject[] button1, GameObject[] button2, GameObject[] button3, GameObject[] button4, GameObject[] button5, GameObject[] button6, GameObject[] button7, GameObject[] button8, GameObject[] button9){
 		//TODO Take care of anywhere and the time that would take on depth 2...
+		Debug.Log ("AI's Move");
+
+		//TODO TAKE CARE OF THE STUPID BUTTONS AHHHHHH
 
 		State current = new State (smallBoards, totalBoard, nextMove, 2);
 		//Calls agent 2, which is the maximizer (AI)
@@ -21,17 +48,48 @@ public class UltimateAI : MonoBehaviour {
 
 		//In essence, this is the top maximizing node. So, when value is called, go MIN, MAX, MIN
 		int maxPossible = -10000;
-		for (int i = 0; i < allPossible.Count (); i++) {
+		for (int i = 0; i < allPossible.Count; i++) {
 			//Get depth two
-			moveUtils.Add (allPossible [i].value (current, 4, 0, 1));
-			maxPossible = Mathf.Max(maxPossible, moveUtils.get(i));
+			maxPossible = Mathf.Max(maxPossible, value (allPossible [i], 4, 0, 1));
+			moveUtils.Add (maxPossible);
 		}
-		
-		State bestMove = allPossible.get(moveUtils.indexOf(maxPossible))
+
+		State bestMove = allPossible[moveUtils.IndexOf (maxPossible)];//Should work because it returns the first
 		//Determine which button needs to be pressed... and return. 
-		//Wow, that means I need to reference every single button from this. Well, there goes my weekend.
-		//TODO
-		return new GameObject();
+		//Just find the single discrepency between this state and current and you have it
+		//TODO Optimize
+
+		//We return this
+		GameObject buttonToPress = new GameObject();
+
+		int[,] newSmallBoards = bestMove.getSmallBoards();
+		for(int i = 0; i < 9; i++){
+			for (int x = 0; x < 9; x++) {
+				if (smallBoards [i, x] != newSmallBoards [i, x]) {
+					Debug.LogWarning ("In the assigning part!!!");
+					if (i == 1) {
+						buttonToPress = button2[x];
+					} else if (i == 2) {
+						buttonToPress = button3[x];
+					} else if (i == 3) {
+						buttonToPress = button4[x];
+					} else if (i == 4) {
+						buttonToPress = button5[x];
+					} else if (i == 5) {
+						buttonToPress = button6[x];
+					} else if (i == 6) {
+						buttonToPress = button7[x];
+					} else if (i == 7) {
+						buttonToPress = button8[x];
+					} else if (i == 8) {
+						buttonToPress = button9[x];
+					} else {//0
+						buttonToPress = button1[x];
+					}
+				}
+			}
+		}
+		return buttonToPress;
 	}
 
 
@@ -39,7 +97,7 @@ public class UltimateAI : MonoBehaviour {
 	int value (State current, int maxDepth, int currentDepth, int agent){
 		//if state at depth 2 or sure win, return utility
 		if (currentDepth >= maxDepth) {
-			return utility;//TODO
+			return current.getValue();
 		}
 
 		//if next is max, return max-value
@@ -51,6 +109,9 @@ public class UltimateAI : MonoBehaviour {
 		if (agent == 1) {
 			return minValue (current, maxDepth, currentDepth, 1);
 		}
+
+		return -30000;
+
 	}
 
 
@@ -63,8 +124,8 @@ public class UltimateAI : MonoBehaviour {
 		} else {
 			nextAgent = 1;	
 		}
-		foreach(element successor in current.getAllMoves(current, agentNum)){
- 			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, nextAgent));//WARNING: Mathf, not Math. Does it matter?
+		foreach(State successor in current.getAllMoves(current, agentNum)){
+			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, nextAgent));//WARNING: Mathf, not Math. Does it matter?
 		}//each successor of state
 		return v;
 	}
@@ -78,7 +139,7 @@ public class UltimateAI : MonoBehaviour {
 		} else {
 			nextAgent = 1;	
 		}
-		foreach(element successor in current.getAllMoves(current, agentNum)){
+		foreach(State successor in current.getAllMoves(current, agentNum)){
 			v = Mathf.Min(v, value(successor, maxDepth, currentDepth + 1, nextAgent));
 		}//each successor of state
 		return v;
@@ -86,7 +147,7 @@ public class UltimateAI : MonoBehaviour {
 
 }
 
-class State : MonoBehaviour {
+class State {
 
 	int[,] smallBoards;
 	int[] totalBoard;
@@ -96,26 +157,40 @@ class State : MonoBehaviour {
 	public State(int[,] smallBoards, int[] totalBoard, int nextMove, int agentNum){
 		this.smallBoards = smallBoards;
 		this.totalBoard = totalBoard;
-		this.nextMove = nextMove;
+		this.nextMove = nextMove;//WARNING: Must be zero-based
 		this.agentNum = agentNum;
 	}
-	
-	
+
+	public int[,] getSmallBoards(){
+		return (int[,])this.smallBoards.Clone();
+	}
+
+	public int getNextMove(){
+		return this.nextMove;
+	}
+
+	public int[] getTotalBoard(){
+		return (int[])this.totalBoard.Clone ();
+	}
+
+
 	//Agent: 1 = min, 2 = max
 	public List<State> getAllMoves(State current, int agent){
-		int board = current.nextMove;
+		int board = current.getNextMove();
+		int[] currentTotalBoard = current.getTotalBoard ();
+		int[,] currentSmallBoards = current.getSmallBoards ();
 		List<State> allPossibleMoves = new List<State>();
 		if(board == -1){
 			//Return every open square in squares not already won.
 			for(int i = 0; i < 9; i++){
-				if(totalBoard[i] != 1 && totalBoard[i] != 2){
+				if(currentTotalBoard[i] == 0){
 					for(int x = 0; x < 9; x++){
-						if(smallBoard[i,x] == 0){
-							int[,] tempSmall = smallBoards;
+						if(currentSmallBoards[i,x] == 0){
+							int[,] tempSmall = current.getSmallBoards();
 							tempSmall[i, x] = agent;
-							int[] tempTotal = totalBoard;
+							int[] tempTotal = current.getTotalBoard();
 							if(CheckForWin(tempSmall, i, agent)){//Instead of board being passed (-1), we pass the board number 
-									tempTotal[i] = agent;
+								tempTotal[i] = agent;
 							}
 							int tempMove = x;
 							int nextAgent = 1;
@@ -130,11 +205,11 @@ class State : MonoBehaviour {
 			}
 		} else {
 			for(int i = 0; i < 9; i++){
-				if(smallBoards[board, i] == 0){
+				if(currentSmallBoards[board, i] == 0){
 					//Open space = possible move!
-					int[,] tempSmall = smallBoards;
+					int[,] tempSmall = (int[,]) currentSmallBoards.Clone();
 					tempSmall[board, i] = agent;
-					int[] tempTotal = totalBoard;
+					int[] tempTotal = (int[]) currentTotalBoard.Clone();
 					if(CheckForWin(tempSmall, board, agent)){
 						tempTotal[board] = agent;
 					}
@@ -156,8 +231,139 @@ class State : MonoBehaviour {
 	public int getValue(){
 		//TODO Get utility score of this state
 		int utility = 0;
-		
+		//We have access to smallBoards[,] and totalBoard[]
+
+		//Test for wins of either agent in totalBoard[]
+		if(CheckForWinNo2DArray(totalBoard, 1)){
+			return -10000;
+		} else if(CheckForWinNo2DArray(totalBoard, 2)){
+			return 9000;
+		}
+
+		//No one has won in this configuration. See what's actually going on in the metaboard first.
+		//Center is weighted 3 (Metaboard weighted double)
+		//Corner 2
+		//Side 1
+		for (int i = 0; i < 9; i++) {
+			if(totalBoard[i] == 1){
+				if(i == 0 || i == 2 || i == 6 || i == 8){
+					utility -= 2;
+				} else if(i == 1 || i == 3 || i == 5 || i == 7){
+					utility -= 1;
+				} else {//Center
+					utility -= 3;
+				}
+			} else if (totalBoard[i] == 2){
+				if(i == 0 || i == 2 || i == 6 || i == 8){
+					utility += 2;
+				} else if(i == 1 || i == 3 || i == 5 || i == 7){
+					utility += 1;
+				} else {//Center
+					utility += 3;
+				}
+			}
+		}
+
+		//When there's two in a row, assign higher utility
+		utility += potentialWinBonus(totalBoard);//TODO Ignore two in a row if blocked already?
+
+		//Everything before this point was metaboard and should be weighted double.
+		utility *= 3;//WARNING: May need to increase
+
+		//Analyze minor boards for position (center, corner, side) and having two in a row
+		for(int i = 0; i < 9; i++){
+			if(totalBoard[i] == 0){
+				//Initialize array - it will be passed to the function later on to determine utility added by two in a row on the board
+				int[] tempBoard = new int[9];
+				for(int x = 0; x < 9; x++){
+					tempBoard [x] = smallBoards [i, x];
+					if(smallBoards[i, x] == 1){
+						if(x == 0 || x == 2 || x == 6 || x == 8){
+							utility -= 2;
+						} else if(x == 1 || x == 3 || x == 5 || x == 7){
+							utility -= 1;
+						} else {//Center
+							utility -= 3;
+						}
+					} else if (totalBoard[i] == 2){
+						if(x == 0 || x == 2 || x == 6 || x == 8){
+							utility += 2;
+						} else if(x == 1 || x == 3 || x == 5 || x == 7){
+							utility += 1;
+						} else {//Center
+							utility += 3;
+						}
+					}
+				}
+
+				//Check for two in a row
+				utility += potentialWinBonus(tempBoard);
+
+			}
+		}
+
+
 		return utility;		
+	}
+
+	//Convenience method for the utility function
+	int potentialWinBonus(int[] totalBoard){
+		int utility = 0;
+		int agent = 2;//AI, so add
+		if(((totalBoard[0] == agent && totalBoard [1] == agent) || (totalBoard[2] == agent && totalBoard [1] == agent)) || (totalBoard[2] == agent && totalBoard [0] == agent)){
+			utility += 2;
+		}
+		if(((totalBoard[0] == agent && totalBoard [3] == agent) || (totalBoard[0] == agent && totalBoard [6] == agent)) || (totalBoard[3] == agent && totalBoard [6] == agent)){
+			utility += 2;
+		}
+		if(((totalBoard[0] == agent && totalBoard [4] == agent) || (totalBoard[0] == agent && totalBoard [8] == agent)) || (totalBoard[4] == agent && totalBoard [8] == agent)){
+			utility += 2;
+		}
+		if(((totalBoard[3] == agent && totalBoard [4] == agent) || (totalBoard[3] == agent && totalBoard [5] == agent)) || (totalBoard[4] == agent && totalBoard [5] == agent)){
+			utility += 2;
+		}
+		if(((totalBoard[1] == agent && totalBoard [4] == agent) || (totalBoard[1] == agent && totalBoard [7] == agent)) || (totalBoard[4] == agent && totalBoard [7] == agent)){
+			utility += 2;
+		}
+		if(((totalBoard[6] == agent && totalBoard [7] == agent) || (totalBoard[7] == agent && totalBoard [8] == agent)) || (totalBoard[6] == agent && totalBoard [8] == agent)){
+			utility += 2;
+		}
+		if(((totalBoard[2] == agent && totalBoard [5] == agent) || (totalBoard[2] == agent && totalBoard [8] == agent)) || (totalBoard[5] == agent && totalBoard [8] == agent)){
+			utility += 2;
+		}
+		if(((totalBoard[2] == agent && totalBoard [4] == agent) || (totalBoard[2] == agent && totalBoard [6] == agent)) || (totalBoard[4] == agent && totalBoard [6] == agent)){
+			utility += 2;
+		}
+
+
+		agent = 1;//Player, so subtract
+		if(((totalBoard[0] == agent && totalBoard [1] == agent) || (totalBoard[2] == agent && totalBoard [1] == agent)) || (totalBoard[2] == agent && totalBoard [0] == agent)){
+			utility -= 2;
+		}
+		if(((totalBoard[0] == agent && totalBoard [3] == agent) || (totalBoard[0] == agent && totalBoard [6] == agent)) || (totalBoard[3] == agent && totalBoard [6] == agent)){
+			utility -= 2;
+		}
+		if(((totalBoard[0] == agent && totalBoard [4] == agent) || (totalBoard[0] == agent && totalBoard [8] == agent)) || (totalBoard[4] == agent && totalBoard [8] == agent)){
+			utility -= 2;
+		}
+		if(((totalBoard[3] == agent && totalBoard [4] == agent) || (totalBoard[3] == agent && totalBoard [5] == agent)) || (totalBoard[4] == agent && totalBoard [5] == agent)){
+			utility -= 2;
+		}
+		if(((totalBoard[1] == agent && totalBoard [4] == agent) || (totalBoard[1] == agent && totalBoard [7] == agent)) || (totalBoard[4] == agent && totalBoard [7] == agent)){
+			utility -= 2;
+		}
+		if(((totalBoard[6] == agent && totalBoard [7] == agent) || (totalBoard[7] == agent && totalBoard [8] == agent)) || (totalBoard[6] == agent && totalBoard [8] == agent)){
+			utility -= 2;
+		}
+		if(((totalBoard[2] == agent && totalBoard [5] == agent) || (totalBoard[2] == agent && totalBoard [8] == agent)) || (totalBoard[5] == agent && totalBoard [8] == agent)){
+			utility -= 2;
+		}
+		if(((totalBoard[2] == agent && totalBoard [4] == agent) || (totalBoard[2] == agent && totalBoard [6] == agent)) || (totalBoard[4] == agent && totalBoard [6] == agent)){
+			utility -= 2;
+		}
+
+		return utility;
+
 	}
 
 	bool CheckForWin (int[,] board, int boardNum, int agentNum){
@@ -173,6 +379,34 @@ class State : MonoBehaviour {
 			s [i] = board [boardNum, i];
 		}
 
+
+		if (s [0] == theInt && (s [1] == theInt && s [2] == theInt)) {
+			return true;
+		} else if (s [3] == theInt && (s [4] == theInt && s [5] == theInt)) {
+			return true;
+		} else if (s [6] == theInt && (s [7] == theInt && s [8] == theInt)) {
+			return true;
+		} else if (s [0] == theInt && (s [3] == theInt && s [6] == theInt)) {
+			return true;
+		} else if (s [1] == theInt && (s [4] == theInt && s [7] == theInt)) {
+			return true;
+		} else if (s [2] == theInt && (s [5] == theInt && s [8] == theInt)) {
+			return true;
+		} else if (s [0] == theInt && (s [4] == theInt && s [8] == theInt)) {
+			return true;
+		} else if (s [2] == theInt && (s [4] == theInt && s [6] == theInt)) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public bool CheckForWinNo2DArray (int[] board, int agentNum){
+
+		int[] s = board;
+
+		int theInt = agentNum;
 
 		if (s [0] == theInt && (s [1] == theInt && s [2] == theInt)) {
 			return true;
