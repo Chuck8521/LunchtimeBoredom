@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class UltimateAI {
 
-
+	//Not necessary?
 	public UltimateAI(){
 		Debug.Log ("Init AI");
 	}
@@ -13,29 +13,29 @@ public class UltimateAI {
 	//Needs to return a button GameObject
 	//nextMove is the board where you need to move next. -1 if anywhere (zero-based!)
 	public GameObject move(int[,] smallBoards, int[] totalBoard, int nextMove, GameObject[] button1, GameObject[] button2, GameObject[] button3, GameObject[] button4, GameObject[] button5, GameObject[] button6, GameObject[] button7, GameObject[] button8, GameObject[] button9){
-		//TODO Take care of anywhere and the time that would take on depth 4...
+		//TODO Add Alpha-Beta pruning
 		Debug.Log ("AI's Move");
 
-		State current = new State (smallBoards, totalBoard, nextMove, 2);//Should this be 2?
+		State current = new State (smallBoards, totalBoard, nextMove, 2);
 		//Calls agent 2, which is the maximizer (AI)
 		List<State> allPossible = current.getAllMoves (current, 2);
 		List<int> moveUtils = new List<int>();
 
-		//In essence, this is the top maximizing node. So, when value is called, go MIN, MAX, MIN
+		//In essence, this is the top maximizing node. So, when value is called, go MIN, MAX, MIN...
 		int maxPossible = -10001;
 		for (int i = 0; i < allPossible.Count; i++) {
-			//Get depth two
-			maxPossible = Mathf.Max(maxPossible, value (allPossible [i], 4, 0, 1 ));//TODO This was one? Check 
+			//Get depth four (for now)
+			maxPossible = Mathf.Max(maxPossible, value (allPossible [i], 4, 0, 1 ));//Passes one as the agent because minimizer goes next
 			Debug.LogWarning("Current MaxPossible: " + maxPossible);
 			moveUtils.Add (maxPossible);
 		}
 
-		State bestMove = allPossible[moveUtils.IndexOf (maxPossible)];//Should work because it returns the first
-		Debug.LogWarning("Utility of picked state: " + bestMove.getValue());//TODO THIS IS GREATER THAN MAX POSSIBLE?
+		State bestMove = allPossible[moveUtils.IndexOf (maxPossible)];//Returns the first occurence 
+		Debug.LogWarning("Utility of picked state: " + bestMove.getValue());
 		//Determine which button needs to be pressed... and return. 
 		//Just find the single discrepency between this state and current and you have it
 
-		//We return this
+		//We will return this
 		GameObject buttonToPress = new GameObject();
 
 		int[,] newSmallBoards = bestMove.getSmallBoards();
@@ -43,7 +43,9 @@ public class UltimateAI {
 			for (int x = 0; x < 9; x++) {
 				if (smallBoards [i, x] != newSmallBoards [i, x]) {
 					Debug.LogWarning ("In the assigning part!!!");
-					if (i == 1) {
+					if(i == 0){
+						buttonToPress = button1[x];	
+					} else if (i == 1) {
 						buttonToPress = button2[x];
 					} else if (i == 2) {
 						buttonToPress = button3[x];
@@ -57,10 +59,8 @@ public class UltimateAI {
 						buttonToPress = button7[x];
 					} else if (i == 7) {
 						buttonToPress = button8[x];
-					} else if (i == 8) {
+					} else {
 						buttonToPress = button9[x];
-					} else {//0
-						buttonToPress = button1[x];
 					}
 				}
 			}
@@ -69,56 +69,37 @@ public class UltimateAI {
 	}
 
 
-	//1 = min, 2 = max            allPossible[i], 4, 0, 1 are being passed first
+	//Reminder: 1 = min, 2 = max
 	int value (State current, int maxDepth, int currentDepth, int agent){
-		//if state at depth 2 or sure win, return utility
+		//If state is at specified maxDepth or sure win or sure loss, return utility
 		if (currentDepth >= maxDepth || current.CheckForWinNo2DArray(current.getTotalBoard(), 1) || current.CheckForWinNo2DArray(current.getTotalBoard(), 2)) {
 			return current.getValue();
-		}
-
-		//if next is max, return max-value
-		if (agent == 2) {
+		} else if (agent == 2) {
+			//Agent is 2. Return maxValue
 			return maxValue (current, maxDepth, currentDepth, 2);
-		}
-
-		//if next is min, return min-value
-		if (agent == 1) {
+		} else {
+			//Agent is 1. Return minValue
 			return minValue (current, maxDepth, currentDepth, 1);
 		}
-
-		Debug.LogWarning ("ERROR RETURNING -30000!");
-		return -30000;
-
+		
 	}
 
 
 	int maxValue (State current, int maxDepth, int currentDepth, int agentNum){
 		int v = -10000;
-		//Switch agentNum
-		int nextAgent;
-		if(agentNum == 1){
-			nextAgent = 2;
-		} else {
-			nextAgent = 1;	
-		}
+		//each successor of state gets analyzed
 		foreach(State successor in current.getAllMoves(current, agentNum)){
-			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, nextAgent));//WARNING: Mathf, not Math. Does it matter?
+			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, 1));//The next agent to move is always 1
 		}//each successor of state
 		return v;
 	}
 
 	int minValue (State current, int maxDepth, int currentDepth, int agentNum){
 		int v = 10000;
-		//Switch agentNum
-		int nextAgent;
-		if(agentNum == 1){
-			nextAgent = 2;
-		} else {
-			nextAgent = 1;	
-		}
+		//each successor of state gets analyzed
 		foreach(State successor in current.getAllMoves(current, agentNum)){
-			v = Mathf.Min(v, value(successor, maxDepth, currentDepth + 1, nextAgent));
-		}//each successor of state
+			v = Mathf.Min(v, value(successor, maxDepth, currentDepth + 1, 2));//The next agent to move is always 2
+		}
 		return v;
 	}
 
@@ -170,7 +151,7 @@ class State {
 								tempTotal[i] = agent;
 							}
 							int tempMove = x;
-							//AHHHHHHHHHHHHHHHHHH UNLESS x WOULD CAUSE THE NEXT AGENT TO GO ANYWHERE IN WHICH CASE IT WOULD BE -1
+							//If x causes the next agent to move anywhere, pass -1
 							if (tempTotal [x] != 0) {
 								tempMove = -1;
 							}
@@ -195,7 +176,7 @@ class State {
 						tempTotal[board] = agent;
 					}
 					int tempMove = i;
-					//AHHHHHHHHHHHHHHHHHH UNLESS i WOULD CAUSE THE NEXT AGENT TO GO ANYWHERE IN WHICH CASE IT WOULD BE -1
+					//If i causes the next agent to move anywhere, pass -1
 					if (tempTotal [i] != 0) {
 						tempMove = -1;
 					}
@@ -216,9 +197,8 @@ class State {
 	public int getValue(){
 		//Get utility score of this state
 		int utility = 0;
-		//We have access to smallBoards[,] and totalBoard[] 
 
-		//Test for wins of either agent in totalBoard[]
+		//Test for wins of either agent in totalBoard[] - if win or loss, it's pointless to continue
 		if(CheckForWinNo2DArray(totalBoard, 1)){
 			return -10000;
 		} else if(CheckForWinNo2DArray(totalBoard, 2)){
@@ -226,17 +206,18 @@ class State {
 		}
 
 		//No one has won in this configuration. See what's actually going on in the metaboard first.
-		//Center is weighted 3 (Metaboard weighted *3)
+		//Center is weighted 3
 		//Corner 2
 		//Side 1
+		//TODO Change weights of each space based on current configuration of square
 		for (int i = 0; i < 9; i++) {
 			if(totalBoard[i] == 1){
 				if(i == 0 || i == 2 || i == 6 || i == 8){
-					utility -= 4;//TODO WARNING THESE ARE UNTESTED AS OF NOW
-				} else if(i == 1 || i == 3 || i == 5 || i == 7){
 					utility -= 2;
+				} else if(i == 1 || i == 3 || i == 5 || i == 7){
+					utility -= 1;
 				} else {//Center
-					utility -= 6;
+					utility -= 3;
 				}
 			} else if (totalBoard[i] == 2){
 				if(i == 0 || i == 2 || i == 6 || i == 8){
@@ -250,10 +231,10 @@ class State {
 		}
 
 		//When there's two in a row, assign higher utility
-		utility += potentialWinBonus(totalBoard);//TODO WARNING TESTIgnore two in a row if blocked already?
+		utility += potentialWinBonus(totalBoard, 3);
 
-		//Everything before this point was metaboard and should be weighted double.
-		utility *= 3;//WARNING: May need to increase
+		//Everything before this point was metaboard and should be weighted significantly more.
+		utility *= 3;//WARNING: May need to increase or decrease as needed
 
 		//Analyze minor boards for position (center, corner, side) and having two in a row
 		for(int i = 0; i < 9; i++){
@@ -282,7 +263,7 @@ class State {
 				}
 
 				//Check for two in a row
-				utility += potentialWinBonus(tempBoard);
+				utility += potentialWinBonus(tempBoard, 3);
 
 			}
 		}
@@ -292,48 +273,48 @@ class State {
 	}
 
 	//Convenience method for the utility function
-	int potentialWinBonus(int[] totalBoard){
+	int potentialWinBonus(int[] totalBoard, int bonusUtility){//bonusUtility added for convenience
 		int utility = 0;
 		int agent = 2;//AI, so add
 		//Need to test and make sure that the third one isn't blocked. If it is, just forget about it.
 		if(((totalBoard[0] == agent && totalBoard [1] == agent) || (totalBoard[2] == agent && totalBoard [1] == agent)) || (totalBoard[2] == agent && totalBoard [0] == agent)){
 			if (!(totalBoard [0] == 1 || totalBoard[1] == 1 || totalBoard[2] == 1)) {
-				utility += 2;
+				utility += bonusUtility;
 			}
 		}
 		if(((totalBoard[0] == agent && totalBoard [3] == agent) || (totalBoard[0] == agent && totalBoard [6] == agent)) || (totalBoard[3] == agent && totalBoard [6] == agent)){
 			if (!(totalBoard [0] == 1 || totalBoard[3] == 1 || totalBoard[6] == 1)) {
-				utility += 2;
+				utility += bonusUtility;
 			}
 		}
 		if(((totalBoard[0] == agent && totalBoard [4] == agent) || (totalBoard[0] == agent && totalBoard [8] == agent)) || (totalBoard[4] == agent && totalBoard [8] == agent)){
 			if (!(totalBoard [0] == 1 || totalBoard[4] == 1 || totalBoard[8] == 1)) {
-				utility += 2;
+				utility += bonusUtility;
 			}
 		}
 		if(((totalBoard[3] == agent && totalBoard [4] == agent) || (totalBoard[3] == agent && totalBoard [5] == agent)) || (totalBoard[4] == agent && totalBoard [5] == agent)){
 			if (!(totalBoard [3] == 1 || totalBoard[4] == 1 || totalBoard[5] == 1)) {
-				utility += 2;
+				utility += bonusUtility;
 			}
 		}
 		if(((totalBoard[1] == agent && totalBoard [4] == agent) || (totalBoard[1] == agent && totalBoard [7] == agent)) || (totalBoard[4] == agent && totalBoard [7] == agent)){
 			if (!(totalBoard [1] == 1 || totalBoard[4] == 1 || totalBoard[7] == 1)) {
-				utility += 2;
+				utility += bonusUtility;
 			}
 		}
 		if(((totalBoard[6] == agent && totalBoard [7] == agent) || (totalBoard[7] == agent && totalBoard [8] == agent)) || (totalBoard[6] == agent && totalBoard [8] == agent)){
 			if (!(totalBoard [6] == 1 || totalBoard[7] == 1 || totalBoard[8] == 1)) {
-				utility += 2;
+				utility += bonusUtility;
 			}
 		}
 		if(((totalBoard[2] == agent && totalBoard [5] == agent) || (totalBoard[2] == agent && totalBoard [8] == agent)) || (totalBoard[5] == agent && totalBoard [8] == agent)){
 			if (!(totalBoard [2] == 1 || totalBoard[5] == 1 || totalBoard[8] == 1)) {
-				utility += 2;
+				utility += bonusUtility;
 			}
 		}
 		if(((totalBoard[2] == agent && totalBoard [4] == agent) || (totalBoard[2] == agent && totalBoard [6] == agent)) || (totalBoard[4] == agent && totalBoard [6] == agent)){
 			if (!(totalBoard [2] == 1 || totalBoard[4] == 1 || totalBoard[6] == 1)) {
-				utility += 2;
+				utility += bonusUtility;
 			}
 		}
 
@@ -342,42 +323,42 @@ class State {
 		agent = 1;//Player, so subtract
 		if(((totalBoard[0] == agent && totalBoard [1] == agent) || (totalBoard[2] == agent && totalBoard [1] == agent)) || (totalBoard[2] == agent && totalBoard [0] == agent)){
 			if (!(totalBoard [0] == 2 || totalBoard[1] == 2 || totalBoard[2] == 2)) {
-				utility -= 2;
+				utility -= bonusUtility;
 			}
 		}
 		if(((totalBoard[0] == agent && totalBoard [3] == agent) || (totalBoard[0] == agent && totalBoard [6] == agent)) || (totalBoard[3] == agent && totalBoard [6] == agent)){
 			if (!(totalBoard [0] == 2 || totalBoard[3] == 2 || totalBoard[6] == 2)) {
-				utility -= 2;
+				utility -= bonusUtility;
 			}
 		}
 		if(((totalBoard[0] == agent && totalBoard [4] == agent) || (totalBoard[0] == agent && totalBoard [8] == agent)) || (totalBoard[4] == agent && totalBoard [8] == agent)){
 			if (!(totalBoard [0] == 2 || totalBoard[4] == 2 || totalBoard[8] == 2)) {
-				utility -= 2;
+				utility -= bonusUtility;
 			}
 		}
 		if(((totalBoard[3] == agent && totalBoard [4] == agent) || (totalBoard[3] == agent && totalBoard [5] == agent)) || (totalBoard[4] == agent && totalBoard [5] == agent)){
 			if (!(totalBoard [3] == 2 || totalBoard[4] == 2 || totalBoard[5] == 2)) {
-				utility -= 2;
+				utility -= bonusUtility;
 			}
 		}
 		if(((totalBoard[1] == agent && totalBoard [4] == agent) || (totalBoard[1] == agent && totalBoard [7] == agent)) || (totalBoard[4] == agent && totalBoard [7] == agent)){
 			if (!(totalBoard [1] == 2 || totalBoard[4] == 2 || totalBoard[7] == 2)) {
-				utility -= 2;
+				utility -= bonusUtility;
 			}
 		}
 		if(((totalBoard[6] == agent && totalBoard [7] == agent) || (totalBoard[7] == agent && totalBoard [8] == agent)) || (totalBoard[6] == agent && totalBoard [8] == agent)){
 			if (!(totalBoard [6] == 2 || totalBoard[7] == 2 || totalBoard[8] == 2)) {
-				utility -= 2;
+				utility -= bonusUtility;
 			}
 		}
 		if(((totalBoard[2] == agent && totalBoard [5] == agent) || (totalBoard[2] == agent && totalBoard [8] == agent)) || (totalBoard[5] == agent && totalBoard [8] == agent)){
 			if (!(totalBoard [2] == 2 || totalBoard[5] == 2 || totalBoard[8] == 2)) {
-				utility -= 2;
+				utility -= bonusUtility;
 			}
 		}
 		if(((totalBoard[2] == agent && totalBoard [4] == agent) || (totalBoard[2] == agent && totalBoard [6] == agent)) || (totalBoard[4] == agent && totalBoard [6] == agent)){
 			if (!(totalBoard [2] == 2 || totalBoard[4] == 2 || totalBoard[6] == 2)) {
-				utility -= 2;
+				utility -= bonusUtility;
 			}
 		}
 
@@ -420,7 +401,8 @@ class State {
 		}
 
 	}
-
+	
+	//This should technically be an override, but the compiler is throwing errors, so for now it's a different method
 	public bool CheckForWinNo2DArray (int[] board, int agentNum){
 
 		int[] s = board;
