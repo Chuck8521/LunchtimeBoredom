@@ -8,7 +8,7 @@ public class UltimateAI {
 	public UltimateAI(){
 		Debug.Log ("Init AI");
 	}
-		
+
 
 	//Needs to return a button GameObject
 	//nextMove is the board where you need to move next. -1 if anywhere (zero-based!)
@@ -25,7 +25,7 @@ public class UltimateAI {
 		int maxPossible = -10001;
 		for (int i = 0; i < allPossible.Count; i++) {
 			//Get depth four (for now)
-			maxPossible = Mathf.Max(maxPossible, value (allPossible [i], 4, 0, 1 ));//Passes one as the agent because minimizer goes next
+			maxPossible = Mathf.Max(maxPossible, value (allPossible [i], 6, 0, 1, -11000, 10000));//Passes one as the agent because minimizer goes next, and inits alpha and beta
 			Debug.LogWarning("Current MaxPossible: " + maxPossible);
 			moveUtils.Add (maxPossible);
 		}
@@ -70,35 +70,45 @@ public class UltimateAI {
 
 
 	//Reminder: 1 = min, 2 = max
-	int value (State current, int maxDepth, int currentDepth, int agent){
+	int value (State current, int maxDepth, int currentDepth, int agent, int alpha, int beta){
 		//If state is at specified maxDepth or sure win or sure loss, return utility
 		if (currentDepth >= maxDepth || current.CheckForWinNo2DArray(current.getTotalBoard(), 1) || current.CheckForWinNo2DArray(current.getTotalBoard(), 2)) {
 			return current.getValue();
 		} else if (agent == 2) {
 			//Agent is 2. Return maxValue
-			return maxValue (current, maxDepth, currentDepth, 2);
+			return maxValue (current, maxDepth, currentDepth, 2, alpha, beta);
 		} else {
 			//Agent is 1. Return minValue
-			return minValue (current, maxDepth, currentDepth, 1);
+			return minValue (current, maxDepth, currentDepth, 1, alpha, beta);
 		}
-		
+
 	}
 
 
-	int maxValue (State current, int maxDepth, int currentDepth, int agentNum){
+	int maxValue (State current, int maxDepth, int currentDepth, int agentNum, int alpha, int beta){
 		int v = -10000;
 		//each successor of state gets analyzed
 		foreach(State successor in current.getAllMoves(current, agentNum)){
-			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, 1));//The next agent to move is always 1
+			v = Mathf.Max(v, value(successor, maxDepth, currentDepth + 1, 1, alpha, beta));//The next agent to move is always 1
+			if (v >= beta) {
+				//Prune gametree
+				return v;
+			}
+			alpha = Mathf.Max(alpha, v);
 		}//each successor of state
 		return v;
 	}
 
-	int minValue (State current, int maxDepth, int currentDepth, int agentNum){
+	int minValue (State current, int maxDepth, int currentDepth, int agentNum, int alpha, int beta){
 		int v = 10000;
 		//each successor of state gets analyzed
 		foreach(State successor in current.getAllMoves(current, agentNum)){
-			v = Mathf.Min(v, value(successor, maxDepth, currentDepth + 1, 2));//The next agent to move is always 2
+			v = Mathf.Min(v, value(successor, maxDepth, currentDepth + 1, 2, alpha, beta));//The next agent to move is always 2
+			if (v <= alpha) {
+				//Prune gametree
+				return v;
+			}
+			beta = Mathf.Min(beta, v);
 		}
 		return v;
 	}
@@ -200,7 +210,7 @@ class State {
 
 		//Test for wins of either agent in totalBoard[] - if win or loss, it's pointless to continue
 		if(CheckForWinNo2DArray(totalBoard, 1)){
-			return -10000;
+			return -100000;
 		} else if(CheckForWinNo2DArray(totalBoard, 2)){
 			return 9000;
 		}
@@ -231,10 +241,10 @@ class State {
 		}
 
 		//When there's two in a row, assign higher utility
-		utility += potentialWinBonus(totalBoard, 3);
+		utility += potentialWinBonus(totalBoard, 5);
 
 		//Everything before this point was metaboard and should be weighted significantly more.
-		utility *= 3;//WARNING: May need to increase or decrease as needed
+		utility *= 200;//WARNING: May need to increase or decrease as needed
 
 		//Analyze minor boards for position (center, corner, side) and having two in a row
 		for(int i = 0; i < 9; i++){
@@ -401,7 +411,7 @@ class State {
 		}
 
 	}
-	
+
 	//This should technically be an override, but the compiler is throwing errors, so for now it's a different method
 	public bool CheckForWinNo2DArray (int[] board, int agentNum){
 
