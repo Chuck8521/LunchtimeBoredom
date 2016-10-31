@@ -13,7 +13,12 @@ while times > 0:
   i = 0
   while i < numProblems:
     problem = raw_input()
-    
+    for ltr in problem:
+      if ltr == ')':
+        #get all letters before it until you reach (
+        subproblem = ""
+        currentIndex = problem.index(ltr)
+        
     i = i + 1
   
   times = times - 1;
