@@ -31,6 +31,9 @@ public class HolidayCode1 {
     
     for(int i = 0; i < singleDirections.length; i++){
      
+	  int currentNS = start.y;
+      int currentEW = start.x;
+	    
       String current = singleDirections[i];
      
       if(current.charAt(0) == 'R'){       
@@ -41,29 +44,28 @@ public class HolidayCode1 {
       
       int number = Integer.parseInt(current.substring(1));
       if(direction % 4 == 0){
-        W += number; 
+        currentEW -= number; 
       } else if (direction % 4 == 1){
-        N += number; 
+        currentNS += number; 
       } else if (direction % 4 == 2){
-        E += number; 
+        currentEW += number; 
       } else {
-        S += number; 
+        currentNS -= number; 
       }
-      
-      int currentNS = N - S;
-      int currentEW = E - W;
+    
       Point currentPoint = new Point(currentEW, currentNS);
       
       for(int k = 0; k < points.size(); k++){
     	  Point testPoint = points.get(k);
     	  if(currentEW == testPoint.x && currentNS == testPoint.y){
     		  System.out.println("This is the location: " + currentEW + ", " + currentNS);
-    		  System.out.println("This is the location2222222: " + testPoint.x + ", " + testPoint.y);
     		  System.out.println(currentNS + currentEW);
+			  return;
     	  }        
       }
       
       points.add(currentPoint);     
+		start = currentPoint;
       
       
     }
