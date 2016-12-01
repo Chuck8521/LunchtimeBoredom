@@ -1,5 +1,17 @@
 import java.util.*;
 
+class Point {
+	
+	public int x;
+	public int y;
+	
+	public Point(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+	
+}
+
 public class HolidayCode1 {
 
   public static void main(String[] args){
@@ -12,7 +24,10 @@ public class HolidayCode1 {
     int E = 0;
     int S = 0;
     int W = 0;
-    ArrayList<Integer> points = new ArrayList<Integer>();
+    ArrayList<Point> points = new ArrayList<Point>();
+    
+    Point start = new Point(0,0);
+    points.add(start);
     
     for(int i = 0; i < singleDirections.length; i++){
      
@@ -37,12 +52,18 @@ public class HolidayCode1 {
       
       int currentNS = N - S;
       int currentEW = E - W;
-      int point = currentNS + currentEW;
-      if(points.contains(point)){
-    	  System.out.println("This is the location: " + point);
-      } else {
-    	  points.add(point);
+      Point currentPoint = new Point(currentEW, currentNS);
+      
+      for(int k = 0; k < points.size(); k++){
+    	  Point testPoint = points.get(k);
+    	  if(currentEW == testPoint.x && currentNS == testPoint.y){
+    		  System.out.println("This is the location: " + currentEW + ", " + currentNS);
+    		  System.out.println("This is the location2222222: " + testPoint.x + ", " + testPoint.y);
+    		  System.out.println(currentNS + currentEW);
+    	  }        
       }
+      
+      points.add(currentPoint);     
       
       
     }
@@ -50,6 +71,9 @@ public class HolidayCode1 {
     int absoluteNS = N - S;
     int absoluteEW = E - W;
     
+    for(int j = 0; j < points.size(); j++){
+    	System.out.print("(" + points.get(j).x + "," + points.get(j).y + ") ");
+    }
     System.out.println("The Up-Down Coordinate is " + absoluteNS + " and the Left-Right Coordinate is " + absoluteEW);
     System.out.println(absoluteNS + absoluteEW);
     
