@@ -12,11 +12,13 @@ public class HolidayCode1 {
     
     ArrayList<Integer> xs = new ArrayList<Integer>();
     ArrayList<Integer> ys = new ArrayList<Integer>();
-    
+           
     xs.add(0);
     ys.add(0);
     
     for(int i = 0; i < singleDirections.length; i++){
+    	
+    	//System.out.print(i);
      
 	  int currentNS = ys.get(ys.size() - 1);
       int currentEW = xs.get(xs.size() - 1);
@@ -36,40 +38,99 @@ public class HolidayCode1 {
     		  direction--;
     	  }
       } else {
-    	  System.out.println("BUG FOUND");
+    	  System.out.println("This shouldn't happen.");
       }
       
       int number = Integer.parseInt(current.substring(1));
       if(direction == 4){
-        currentEW -= number; 
+        //currentEW -= number;
+        for(int j = 0; j < number; j++){
+        	currentEW--;
+        	int currentX = currentEW;
+            int currentY = currentNS;
+            
+            for(int k = 0; k < xs.size(); k++){
+          	   if(currentX == xs.get(k)){
+          		  if(ys.get(k) == currentY){
+          			  System.out.println("This is the location: " + currentEW + ", " + currentNS);
+              		  System.out.println(currentNS + currentEW);
+          			  return;  
+          		  }
+          	  }        
+            }
+            
+            xs.add(currentX);
+            ys.add(currentY);
+        }
       } else if (direction == 1){
-        currentNS += number; 
+        //currentNS += number; 
+    	  for(int j = 0; j < number; j++){
+          	currentNS++;
+          	int currentX = currentEW;
+              int currentY = currentNS;
+              
+              for(int k = 0; k < xs.size(); k++){
+            	  int testX = xs.get(k);
+            	  if(currentX == testX){
+            		  if(ys.get(k) == currentY){
+            			  System.out.println("This is the location: " + currentEW + ", " + currentNS);
+                		  System.out.println(currentNS + currentEW);
+            			  return;  
+            		  }
+            	  }        
+              }
+              
+              xs.add(currentX);
+              ys.add(currentY);
+          }
       } else if (direction == 2){
-        currentEW += number; 
+        //currentEW += number; 
+    	  for(int j = 0; j < number; j++){
+          	currentEW++;
+          	//System.out.println(currentEW);
+          	int currentX = currentEW;
+              int currentY = currentNS;
+              
+              for(int k = 0; k < xs.size(); k++){
+            	  int testX = xs.get(k);
+            	  if(currentX == testX){
+            		  if(ys.get(k) == currentY){
+            			  System.out.println("This is the location: " + currentEW + ", " + currentNS);
+                		  System.out.println(currentNS + currentEW);
+            			  return;  
+            		  }
+            	  }        
+              }
+              
+              xs.add(currentX);
+              ys.add(currentY);
+          }
       } else if (direction == 3){
-        currentNS -= number; 
+        //currentNS -= number; 
+    	  for(int j = 0; j < number; j++){
+          	currentNS--;
+          	int currentX = currentEW;
+              int currentY = currentNS;
+              
+              for(int k = 0; k < xs.size(); k++){
+            	  int testX = xs.get(k);
+            	  if(currentX == testX){
+            		  if(ys.get(k) == currentY){
+            			  System.out.println("This is the location: " + currentEW + ", " + currentNS);
+                		  System.out.println(currentNS + currentEW);
+            			  return;  
+            		  }
+            	  }        
+              }
+              
+              xs.add(currentX);
+              ys.add(currentY);
+          }
       } else {
-    	  System.out.println("HELP PLZ");
+    	  System.out.println("That should't happen.");
       }
     
-      int currentX = currentEW;
-      int currentY = currentNS;
-      
-      for(int k = 0; k < xs.size(); k++){
-    	  int testX = xs.get(k);
-    	  if(currentX == testX){
-    		  if(ys.get(k) == currentY){
-    			  System.out.println("This is the location: " + currentEW + ", " + currentNS);
-        		  System.out.println(currentNS + currentEW);
-    			  return;  
-    		  }
-    	  }        
-      }
-      
-      xs.add(currentX);
-      ys.add(currentY);
-      
-      
+            
     }
     
     
