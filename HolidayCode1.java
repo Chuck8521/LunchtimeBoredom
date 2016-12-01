@@ -12,6 +12,7 @@ public class HolidayCode1 {
     int E = 0;
     int S = 0;
     int W = 0;
+    ArrayList<Integer> points = new ArrayList<Integer>();
     
     for(int i = 0; i < singleDirections.length; i++){
      
@@ -34,12 +35,23 @@ public class HolidayCode1 {
         S += number; 
       }
       
-      int absoluteNS = N - S;
-      int absoluteEW = E - W;
+      int currentNS = N - S;
+      int currentEW = E - W;
+      int point = currentNS + currentEW;
+      if(points.contains(point)){
+    	  System.out.println("This is the location: " + point);
+      } else {
+    	  points.add(point);
+      }
       
-      System.out.println("The Up-Down Coordinate is " + absoluteNS + " and the Left-Right Coordinate is " + absoluteEW);
       
     }
+    
+    int absoluteNS = N - S;
+    int absoluteEW = E - W;
+    
+    System.out.println("The Up-Down Coordinate is " + absoluteNS + " and the Left-Right Coordinate is " + absoluteEW);
+    System.out.println(absoluteNS + absoluteEW);
     
   }
    
