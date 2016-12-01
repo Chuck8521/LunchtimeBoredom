@@ -15,15 +15,13 @@ class Point {
 public class HolidayCode1 {
 
   public static void main(String[] args){
+	  
 
     Scanner input = new Scanner(System.in);
     String rawIn = input.nextLine();
     String[] singleDirections = rawIn.split(", ");
     int direction = 1; //1 = N, 2 = E, 3 = S, 4 = W
-    int N = 0;
-    int E = 0;
-    int S = 0;
-    int W = 0;
+    
     ArrayList<Point> points = new ArrayList<Point>();
     
     Point start = new Point(0,0);
@@ -37,20 +35,32 @@ public class HolidayCode1 {
       String current = singleDirections[i];
      
       if(current.charAt(0) == 'R'){       
-        direction++;
+    	  if(direction == 4){
+    		  direction = 1;
+    	  } else {
+    		  direction++;  
+    	  }
+      } else if(current.charAt(0) == 'L'){
+    	  if(direction == 1){
+    		  direction = 4;
+    	  } else {
+    		  direction--;
+    	  }
       } else {
-        direction--;
+    	  System.out.println("BUG FOUND");
       }
       
       int number = Integer.parseInt(current.substring(1));
-      if(direction % 4 == 0){
+      if(direction == 4){
         currentEW -= number; 
-      } else if (direction % 4 == 1){
+      } else if (direction == 1){
         currentNS += number; 
-      } else if (direction % 4 == 2){
+      } else if (direction == 2){
         currentEW += number; 
-      } else {
+      } else if (direction == 3){
         currentNS -= number; 
+      } else {
+    	  System.out.println("HELP PLZ");
       }
     
       Point currentPoint = new Point(currentEW, currentNS);
@@ -70,14 +80,6 @@ public class HolidayCode1 {
       
     }
     
-    int absoluteNS = N - S;
-    int absoluteEW = E - W;
-    
-    for(int j = 0; j < points.size(); j++){
-    	System.out.print("(" + points.get(j).x + "," + points.get(j).y + ") ");
-    }
-    System.out.println("The Up-Down Coordinate is " + absoluteNS + " and the Left-Right Coordinate is " + absoluteEW);
-    System.out.println(absoluteNS + absoluteEW);
     
   }
    
