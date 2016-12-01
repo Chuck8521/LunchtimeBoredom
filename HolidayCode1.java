@@ -1,17 +1,5 @@
 import java.util.*;
 
-class Point {
-	
-	public int x;
-	public int y;
-	
-	public Point(int x, int y){
-		this.x = x;
-		this.y = y;
-	}
-	
-}
-
 public class HolidayCode1 {
 
   public static void main(String[] args){
@@ -22,15 +10,16 @@ public class HolidayCode1 {
     String[] singleDirections = rawIn.split(", ");
     int direction = 1; //1 = N, 2 = E, 3 = S, 4 = W
     
-    ArrayList<Point> points = new ArrayList<Point>();
+    ArrayList<Integer> xs = new ArrayList<Integer>();
+    ArrayList<Integer> ys = new ArrayList<Integer>();
     
-    Point start = new Point(0,0);
-    points.add(start);
+    xs.add(0);
+    ys.add(0);
     
     for(int i = 0; i < singleDirections.length; i++){
      
-	  int currentNS = start.y;
-      int currentEW = start.x;
+	  int currentNS = ys.get(ys.size() - 1);
+      int currentEW = xs.get(xs.size() - 1);
 	    
       String current = singleDirections[i];
      
@@ -63,19 +52,22 @@ public class HolidayCode1 {
     	  System.out.println("HELP PLZ");
       }
     
-      Point currentPoint = new Point(currentEW, currentNS);
+      int currentX = currentEW;
+      int currentY = currentNS;
       
-      for(int k = 0; k < points.size(); k++){
-    	  Point testPoint = points.get(k);
-    	  if(currentEW == testPoint.x && currentNS == testPoint.y){
-    		  System.out.println("This is the location: " + currentEW + ", " + currentNS);
-    		  System.out.println(currentNS + currentEW);
-			  return;
+      for(int k = 0; k < xs.size(); k++){
+    	  int testX = xs.get(k);
+    	  if(currentX == testX){
+    		  if(ys.get(k) == currentY){
+    			  System.out.println("This is the location: " + currentEW + ", " + currentNS);
+        		  System.out.println(currentNS + currentEW);
+    			  return;  
+    		  }
     	  }        
       }
       
-      points.add(currentPoint);     
-		start = currentPoint;
+      xs.add(currentX);
+      ys.add(currentY);
       
       
     }
