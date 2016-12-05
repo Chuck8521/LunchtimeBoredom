@@ -18,6 +18,7 @@ public class HolidayCode5 {
 			byte[] theDigest = md.digest(bytesOfMessage);
 			String hex = bytesToHex(theDigest);
 			
+			//If hex starts with 5 zeros, the sixth digit is added to password
 			
 			
 			number++;
