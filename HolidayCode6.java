@@ -1,7 +1,22 @@
-import java.util.ArrayList;
+import java.util.*;
 import java.io.*;
 
 public class HolidayCode6 {
+    
+    public char MostFrequent (HashMap<Character, Integer> charMap){
+        
+        int max = 0;
+        char mostFreq = '';
+        for(char current : charMap.keySet()){
+            if(charMap.get(current) > max){
+                mostFreq = current;
+                max = charMap.get(current);
+            }
+        }
+        
+        return mostFreq;
+        
+    }
 
   public static void main(String[] args){	  
 
@@ -98,16 +113,9 @@ public class HolidayCode6 {
             }
         	
         }
+       
         
-        Map.Entry<MyObject, Double> maxEntry = null;
-        for (Map.Entry<MyObject, Double> entry : map.entrySet()) {
-          if (maxEntry == null || entry.getValue() > maxEntry.getValue()) {
-            maxEntry = entry;
-          }
-        }
-        MyObject maxKey = maxEntry.getKey();
-        
-        System.out.println();
+        System.out.println(MostFrequent(char1) + MostFrequent(char2) + MostFrequent(char3) + MostFrequent(char4) + MostFrequent(char5) + MostFrequent(char6) + MostFrequent(char7) + MostFrequent(char8));
      
      } catch (IOException error) { //Need this for using buffered readers
   			error.printStackTrace();
