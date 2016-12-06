@@ -3,14 +3,15 @@ import java.io.*;
 
 public class HolidayCode6 {
     
-    public char MostFrequent (HashMap<Character, Integer> charMap){
+    public static char MostFrequent (HashMap<Character, Integer> charMap){//For Part 2, Least Frequent
         
-        int max = 0;
-        char mostFreq = '';
+        //int max = 0;
+    	int min = 999999;
+        char mostFreq = ' ';
         for(char current : charMap.keySet()){
-            if(charMap.get(current) > max){
+            if(charMap.get(current) < min){
                 mostFreq = current;
-                max = charMap.get(current);
+                min = charMap.get(current);
             }
         }
         
@@ -29,14 +30,14 @@ public class HolidayCode6 {
         
         String line;
        
-       HashMap<Character, Value> char1 = new HashMap<Character, Value>();
-       HashMap<Character, Value> char2 = new HashMap<Character, Value>();
-       HashMap<Character, Value> char3 = new HashMap<Character, Value>();
-       HashMap<Character, Value> char4 = new HashMap<Character, Value>();
-       HashMap<Character, Value> char5 = new HashMap<Character, Value>();
-       HashMap<Character, Value> char6 = new HashMap<Character, Value>();
-       HashMap<Character, Value> char7 = new HashMap<Character, Value>();
-       HashMap<Character, Value> char8 = new HashMap<Character, Value>();
+       HashMap<Character, Integer> char1 = new HashMap<Character, Integer>();
+       HashMap<Character, Integer> char2 = new HashMap<Character, Integer>();
+       HashMap<Character, Integer> char3 = new HashMap<Character, Integer>();
+       HashMap<Character, Integer> char4 = new HashMap<Character, Integer>();
+       HashMap<Character, Integer> char5 = new HashMap<Character, Integer>();
+       HashMap<Character, Integer> char6 = new HashMap<Character, Integer>();
+       HashMap<Character, Integer> char7 = new HashMap<Character, Integer>();
+       HashMap<Character, Integer> char8 = new HashMap<Character, Integer>();
        
         while((line = input.readLine()) != null){
         
@@ -103,7 +104,7 @@ public class HolidayCode6 {
                 char7.put(current, 1);
             }
            
-           current = line.charAt(8);
+           current = line.charAt(7);
            if(char8.get(current) != null){
                 int value = char8.get(current);
                 value++;
@@ -115,7 +116,14 @@ public class HolidayCode6 {
         }
        
         
-        System.out.println(MostFrequent(char1) + MostFrequent(char2) + MostFrequent(char3) + MostFrequent(char4) + MostFrequent(char5) + MostFrequent(char6) + MostFrequent(char7) + MostFrequent(char8));
+        System.out.print(MostFrequent(char1));
+        System.out.print(MostFrequent(char2));
+        System.out.print(MostFrequent(char3));
+        System.out.print(MostFrequent(char4));
+        System.out.print(MostFrequent(char5));
+        System.out.print(MostFrequent(char6));
+        System.out.print(MostFrequent(char7));
+        System.out.println(MostFrequent(char8));
      
      } catch (IOException error) { //Need this for using buffered readers
   			error.printStackTrace();
