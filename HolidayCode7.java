@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.*;
 
 public class HolidayCode7 {
 
@@ -16,9 +17,10 @@ public class HolidayCode7 {
         
        
         while((line = input.readLine()) != null){
-          boolean validOut = false;
           //Assuming all have [] sequences
-          boolean validIn = true;
+        	ArrayList<String> lookForIn = new ArrayList<String>();
+        	ArrayList<String> lookForOut = new ArrayList<String>();
+          boolean valid = false;
           boolean inside = false;
           String charString = "";
           for(int i = 0; i < line.length(); i++){
@@ -35,35 +37,51 @@ public class HolidayCode7 {
             
             //We know it's not an open or close. Do stuff
             charString += Character.toString(current);
-            if(charString.length() > 4){
+            if(charString.length() > 3){
             	charString = charString.substring(1);
             }
             
-            if (charString.length() < 4){
+            if (charString.length() < 3){
             	continue; //Can do nothing
             } else {
             	String first = charString.substring(0, 2);
-            	String second = charString.substring(2);
+            	String second = charString.substring(1);
             	String reverseSecond = Character.toString(second.charAt(1));
             	reverseSecond += Character.toString(second.charAt(0));
-            	if(second.charAt(0) == second.charAt(1)){
+            	if(first.charAt(0) == first.charAt(1)){
             		//Same character. Continue
             		continue;
             	}
-            	if(first.equals(reverseSecond)){
+            	
+            	if(reverseSecond.equals(first)){
+            		//We have an ABA string.
+            		String inverse = second;
+            		inverse += Character.toString(inverse.charAt(0));
+            		//System.out.println(charString);
+            		//System.out.println(inverse);
             		if(inside){
-            			validIn = false;
-            			break;
+            			if(lookForIn.contains(charString)){
+            				valid = true;
+            				continue;
+            			} else {
+            				lookForOut.add(inverse);
+            			}
             		} else {
-            			validOut = true;
+            			if(lookForOut.contains(charString)){
+            				valid = true;
+            				continue;
+            			} else {
+            				lookForIn.add(inverse);
+            			}
             		}
             	}
+            	
             }
             
             
           }
           
-          if(validIn && validOut){
+          if(valid){
         	  total++;
           }
         
