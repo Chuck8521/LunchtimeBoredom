@@ -34,6 +34,6 @@ while i < times:
         
         j += 1
     
-    print(\n)
+    print('')
     
     i += 1
