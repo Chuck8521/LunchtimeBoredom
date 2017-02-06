@@ -4,20 +4,20 @@ i = 0
 
 while i < times:
     
-    line = input()
-    map(int, line.split())
+    line = raw_input()
+    elements = map(int, line.split())
     
-    element1 = map(0)
-    element2 = map(1)
+    element1 = elements[0]
+    element2 = elements[1]
     
-    length = map(2)
+    length = elements[2]
     length -= 2
     
     past1 = element2
     past2 = element1
     
-    print(past2,)
-    print(past1,)
+    print(past2),
+    print(past1),
     
     nextElement = 0
     
@@ -30,8 +30,10 @@ while i < times:
         past2 = past1
         past1 = nextElement
         
-        print(nextElement,)
+        print(nextElement),
         
         j += 1
+    
+    print(\n)
     
     i += 1
