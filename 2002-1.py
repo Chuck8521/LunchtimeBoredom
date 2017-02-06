@@ -4,10 +4,13 @@ i = 0
 
 while i < times:
     
-    element1 = input()
-    element2 = input()
+    line = input()
+    map(int, line.split())
     
-    length = input()
+    element1 = map(0)
+    element2 = map(1)
+    
+    length = map(2)
     length -= 2
     
     past1 = element2
@@ -18,6 +21,8 @@ while i < times:
     
     nextElement = 0
     
+    j = 0
+    
     while j < length:
     
         nextElement = past1 + past2
@@ -27,6 +32,6 @@ while i < times:
         
         print(nextElement)
         
-        j++
+        j += 1
     
-    i++
+    i += 1
