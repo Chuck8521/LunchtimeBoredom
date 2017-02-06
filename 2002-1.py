@@ -16,8 +16,8 @@ while i < times:
     past1 = element2
     past2 = element1
     
-    print(past2)
-    print(past1)
+    print(past2,)
+    print(past1,)
     
     nextElement = 0
     
@@ -30,7 +30,7 @@ while i < times:
         past2 = past1
         past1 = nextElement
         
-        print(nextElement)
+        print(nextElement,)
         
         j += 1
     
