@@ -1,3 +1,6 @@
+import math
+from fractions import gcd
+
 times = input()
 
 i = 0
@@ -15,10 +18,36 @@ while i < times:
   
   #All digits plus one set repeating - all digits
   
-  bigNumber = temp
-  spliceSpot = len(temp) - repDigit
-  smallNumber = temp[0,spliceSpot]
+  bigNumber = float(temp)
+  spliceSpot = int(len(temp) - repDigit)
+  print(spliceSpot)
+  smallNumber = float(temp[0:spliceSpot])
   
-  print(smallNumber)
+  smallNumber *= float(math.pow(10,(len(parts[0]) - repDigit)))
+  bigNumber *= float(math.pow(10,len(parts[0])))
+  
+  #print(smallNumber)
+  #print(bigNumber)
+  
+  numer = bigNumber - smallNumber
+  print(numer)
+  denom = ''
+  
+  j = 0
+  while j < repDigit:
+    denom += '9'
+    j += 1
+  
+  while len(denom) <= len(str(numer)) - 1:
+    denom += '0'
+  
+  denom = int(denom)
+  
+  numer /= gcd(numer,denom)
+  denom /= gcd(numer,denom)
+  
+  print(numer),
+  print('/'),
+  print(denom)
   
   i += 1
