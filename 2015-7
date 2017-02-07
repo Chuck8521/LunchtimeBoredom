@@ -1,0 +1,24 @@
+times = input()
+
+i = 0
+while i < times:
+  
+  line = raw_input()
+  print('0.0' + line + ' = '),
+  
+  parts = map(str, line.split())
+  
+  temp = parts[0]
+  temp = '0.' + temp
+  #temp = float(temp)
+  repDigit = int(parts[1])
+  
+  #All digits plus one set repeating - all digits
+  
+  bigNumber = temp
+  spliceSpot = len(temp) - repDigit
+  smallNumber = temp[0,spliceSpot]
+  
+  print(smallNumber)
+  
+  i += 1
