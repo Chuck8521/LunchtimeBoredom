@@ -1,3 +1,6 @@
+import operator
+import collections
+
 events = input()
 
 allN = []
@@ -39,9 +42,40 @@ while i < events:
    i += 1
    
    
-print('    G S B T')
+print('     G  S  B  T')
+
+
+totals = {}
+
 
 for key in allN:
+   
+    total = 0
+
+    if key in gold:
+      total += gold[key]
+      
+    if key in silver:
+      total += silver[key]
+      
+    if key in bronze:
+      total += bronze[key]
+    
+    totals[key] = total
+
+
+
+sorted_totals = sorted(totals.items(), key=operator.itemgetter(1)) #INCREDIBLY USEFUL
+sorted(allN)
+sorted_gold = sorted(gold.items(), key=operator.itemgetter(1))
+sorted_silver = sorted(silver.items(), key=operator.itemgetter(1))
+
+
+
+
+
+
+"""for key in allN:
    
     total = 0
 
@@ -64,4 +98,4 @@ for key in allN:
     else:
       print '0',
     
-    print total
+    print total"""
