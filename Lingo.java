@@ -19,16 +19,34 @@ public class Lingo {
         }
         
         Random rn = new Random();
-        index = rn.nextInt(words.size());        
-        trueWord = words.get(index);
+        int index = rn.nextInt(words.size());        
+        String trueWord = words.get(index);
         
         //Now for the Lingo Logic
         Scanner in = new Scanner(System.in);
-        unsolved = true;
-        
-        while(unsolved){
+        String hint = Character.toString(trueWord.getChar(0));
+        hint += "....";
+      
+        while(true){
           
-          guess = in.nextLine();
+          System.out.println(hint);
+          String guess = in.nextLine();
+          
+          if(guess.equals(trueWord)){
+            System.out.println("You win!");
+            break;
+          }
+          
+          for(int i = 0; i < guess.length(); i++){//Assumes length 5 of guess
+            
+            if(guess.charAt(i) == trueWord.charAt(i)){
+              hint.charAt(i) == trueWord.charAt(i).toUpperCase();
+            } else if(trueWord.contains(guess.charAt(i))){
+              hint.charAt(i) == guess.charAt(i).toLowerCase();
+            }
+            
+          }
+          
           
         }        
         
