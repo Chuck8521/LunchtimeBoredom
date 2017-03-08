@@ -20,17 +20,32 @@ public class Lingo {
         
         Random rn = new Random();
         int index = rn.nextInt(words.size());        
-        String trueWord = words.get(index);
+        String trueWord = words.get(index).toUpperCase();
         
         //Now for the Lingo Logic
         Scanner in = new Scanner(System.in);
-        String hint = Character.toString(trueWord.getChar(0));
-        hint += "....";
+        String[] hint = trueWord.split("");
+        String firstLetter = hint[0].toUpperCase();
+        hint[0] = firstLetter;
+        for(int i = 1; i < hint.length; i++){
+        	hint[i] = ".";
+        }
       
         while(true){
           
-          System.out.println(hint);
-          String guess = in.nextLine();
+        	
+        	for(int i = 0; i < hint.length; i++){
+        		System.out.print(hint[i]);
+            }
+        	
+        	//Reset hint now - looks better
+        	for(int i = 1; i < hint.length; i++){
+            	hint[i] = ".";
+            }
+      
+        	
+          System.out.println();
+          String guess = in.nextLine().toUpperCase();
           
           if(guess.equals(trueWord)){
             System.out.println("You win!");
@@ -40,9 +55,11 @@ public class Lingo {
           for(int i = 0; i < guess.length(); i++){//Assumes length 5 of guess
             
             if(guess.charAt(i) == trueWord.charAt(i)){
-              hint.charAt(i) == trueWord.charAt(i).toUpperCase();
-            } else if(trueWord.contains(guess.charAt(i))){
-              hint.charAt(i) == guess.charAt(i).toLowerCase();
+              char letter = trueWord.charAt(i);
+              hint[i] =  Character.toString(letter).toUpperCase();
+            } else if(trueWord.contains(Character.toString(guess.charAt(i)).toUpperCase())){
+            	char letter = guess.charAt(i);
+                hint[i] =  Character.toString(letter).toLowerCase();
             }
             
           }
