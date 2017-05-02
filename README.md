@@ -1,5 +1,5 @@
 # LunchtimeBoredom
-Code I wrote (mainly) during my lunch periods throughout the year. General programming problems and some interesting stuff to come.
+Code I wrote during my lunch periods throughout junior year. General programming problems and some interesting stuff. New repository coming soon for new projects!
 
 Feel free to suggest ideas for projects, solving the same kind of problems gets old fast.
 
