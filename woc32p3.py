@@ -2,8 +2,6 @@
 
 import sys
 
-def boolProd(m1, m2):
-    
 
 def circularWalk(n, s, t, r_0, g, seed, p):
     # Complete this function
@@ -31,13 +29,33 @@ def circularWalk(n, s, t, r_0, g, seed, p):
                 boolMatrix[q][q-i] = 1
                 i += 1
                 
+    #boolMatrix is now right CONFIRMED. See what's going on
+    visited = []
+    currentPoints = [s]
+    steps = 0
+    #When t is in visited
+    while t not in visited:
+        newCurr = []
+        for vertex in currentPoints:
+            line = boolMatrix[vertex]
+            for index, num in enumerate(line):
+                if num == 1 and index not in newCurr and index not in visited and index not in currentPoints:
+                    newCurr.append(index)
+                    
+        #visited += newCurr
+        for vertex in currentPoints:
+            if vertex not in visited:
+                visited.append(vertex)
+        
+        currentPoints = newCurr
+        steps += 1
+        
+        #Take all of visited's points out of current
+        for v in currentPoints:
+            if v in visited:
+                currentPoints.remove(v)
     
-    #boolMatrix is now right. Take products till answer and count steps
-    
-    
-    
-    
-    return boolMatrix
+    return steps - 1 #Because of how stuff is added to visited
             
 
 n, s, t = input().strip().split(' ')
