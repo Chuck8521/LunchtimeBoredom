@@ -9,6 +9,10 @@ def circularWalk(n, s, t, r_0, g, seed, p):
     if s == t:
         return 0
     
+    r = [r_0]
+    for q in range(1,n):
+        r.append(((r[q-1]*g)+seed) % p)
+    
     visited = []
     currentPoints = [s]
     steps = 0
@@ -20,9 +24,10 @@ def circularWalk(n, s, t, r_0, g, seed, p):
         
         newCurr = []
         for vertex in currentPoints:
-            #TODO
-            if index not in newCurr and index not in visited and index not in currentPoints:
-                newCurr.append(index)
+            possible = [vertex + i for i in range(-r[vertex],r[vertex] + 1)]
+            for index in possible:
+                if index not in newCurr and (index not in visited and index not in currentPoints):
+                    newCurr.append(index)
                     
         #visited += current
         for vertex in currentPoints:
@@ -31,12 +36,8 @@ def circularWalk(n, s, t, r_0, g, seed, p):
         
         currentPoints = newCurr
         steps += 1
-        
-        #Take all of visited's points out of current
-        for v in currentPoints:
-            if v in visited:
-                currentPoints.remove(v)
-                
+        if(steps == 20):
+            return currentPoints
     
     return steps
             
