@@ -12,30 +12,28 @@ for t in range(0,n):
 for q in range(p):
     #Quick Union the line
     first, sec = list(map(int,input().split()))
-    arr[first] = ParentOf(sec)
+    lookFor = arr[first]
+    arr[first] = ParentOf(sec,arr)
+    changeTo = arr[first]
+    for w in range(n):
+        if arr[w] == lookFor:
+            arr[w] = changeTo
+            
+#print(arr)
+    
     
 #Get number of people in each group
-groups = []
+groups = [0] * n
 for q in range(0,n):
-    groups[q] = arr.count(q)
+    if arr.count(q) != 0:
+        groups[q] = arr.count(q)
     
-    
-#groups is accurate if 0's removed
-trueG = []
-for t in groups:
-    if t != 0:
-        trueG.append(t)
         
 ways = 0
-for index, a in enumerate(trueG):
+for index, a in enumerate(groups):
     i = index + 1
-    while i < len(trueG):
-        ways += a * trueG[i]
+    while i < len(groups):
+        ways += a * groups[i]
         i += 1
         
 print(str(ways))
-        
-    
-    
-    
-    
