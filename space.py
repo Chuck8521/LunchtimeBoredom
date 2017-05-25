@@ -5,9 +5,7 @@ def ParentOf(n, arr):
         return ParentOf(arr[n],arr)
 
 n, p = list(map(int, input().split()))
-arr = []
-for t in range(0,n):
-    arr.append(t)
+arr = [t for t in range(0,n)]
 
 for q in range(p):
     #Quick Union the line
@@ -21,12 +19,13 @@ for q in range(p):
             
 #print(arr)
     
-    
+nu = set(arr)
 #Get number of people in each group
 groups = [0] * n
-for q in range(0,n):
-    if arr.count(q) != 0:
-        groups[q] = arr.count(q)
+for q in nu:
+    temp = arr.count(q)
+    if temp > 0:
+        groups[q] = temp
     
         
 ways = 0
@@ -37,3 +36,8 @@ for index, a in enumerate(groups):
         i += 1
         
 print(str(ways))
+        
+    
+    
+    
+    
